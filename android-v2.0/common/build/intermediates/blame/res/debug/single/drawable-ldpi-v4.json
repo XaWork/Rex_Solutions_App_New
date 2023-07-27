@@ -1,0 +1,62 @@
+[
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\drawable-ldpi-v4\\alerter_ic_notifications.png",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\alerter-2.0.4.aar\\7025d15ee2b83d7d0d9430e7452aebb7\\res\\drawable-ldpi-v4\\alerter_ic_notifications.png"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\drawable-ldpi-v4\\ucrop_ic_next.png",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\ucrop-2.2.1.aar\\4e69cd963e17c093ef3a6e4cdc8e9de5\\res\\drawable-ldpi-v4\\ucrop_ic_next.png"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\drawable-ldpi-v4\\marker_destination.png",
+        "source": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\src\\main\\res\\drawable-ldpi\\marker_destination.png"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\drawable-ldpi-v4\\ucrop_ic_reset.png",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\ucrop-2.2.1.aar\\4e69cd963e17c093ef3a6e4cdc8e9de5\\res\\drawable-ldpi-v4\\ucrop_ic_reset.png"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\drawable-ldpi-v4\\ucrop_ic_angle.png",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\ucrop-2.2.1.aar\\4e69cd963e17c093ef3a6e4cdc8e9de5\\res\\drawable-ldpi-v4\\ucrop_ic_angle.png"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\drawable-ldpi-v4\\ucrop_ic_scale.png",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\ucrop-2.2.1.aar\\4e69cd963e17c093ef3a6e4cdc8e9de5\\res\\drawable-ldpi-v4\\ucrop_ic_scale.png"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\drawable-ldpi-v4\\alerter_ic_face.png",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\alerter-2.0.4.aar\\7025d15ee2b83d7d0d9430e7452aebb7\\res\\drawable-ldpi-v4\\alerter_ic_face.png"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\drawable-ldpi-v4\\ic_arrow_down_24dp.png",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\preference-v7-27.1.0.aar\\b28b7d24d49a957ce1045a80bf69cb5c\\res\\drawable-ldpi-v4\\ic_arrow_down_24dp.png"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\drawable-ldpi-v4\\ucrop_ic_rotate.png",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\ucrop-2.2.1.aar\\4e69cd963e17c093ef3a6e4cdc8e9de5\\res\\drawable-ldpi-v4\\ucrop_ic_rotate.png"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\drawable-ldpi-v4\\ucrop_ic_cross.png",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\ucrop-2.2.1.aar\\4e69cd963e17c093ef3a6e4cdc8e9de5\\res\\drawable-ldpi-v4\\ucrop_ic_cross.png"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\drawable-ldpi-v4\\md_nav_back.png",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\core-0.9.6.0.aar\\24e7bdc7b9b41a29c890178982d81402\\res\\drawable-ldpi-v4\\md_nav_back.png"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\drawable-ldpi-v4\\ucrop_ic_done.png",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\ucrop-2.2.1.aar\\4e69cd963e17c093ef3a6e4cdc8e9de5\\res\\drawable-ldpi-v4\\ucrop_ic_done.png"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\drawable-ldpi-v4\\marker_taxi.png",
+        "source": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\src\\main\\res\\drawable-ldpi\\marker_taxi.png"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\drawable-ldpi-v4\\ucrop_ic_crop.png",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\ucrop-2.2.1.aar\\4e69cd963e17c093ef3a6e4cdc8e9de5\\res\\drawable-ldpi-v4\\ucrop_ic_crop.png"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\drawable-ldpi-v4\\marker_pickup.png",
+        "source": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\src\\main\\res\\drawable-ldpi\\marker_pickup.png"
+    }
+]

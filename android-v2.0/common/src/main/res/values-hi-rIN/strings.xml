@@ -1,0 +1,286 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="login">लॉगइन/साइन अप</string>
+    <string name="copyright_notice">कॉपीराइट © 2018 Q-CAB सभी अधिकार सुरक्षित.</string>
+    <string name="connecting_server">कनेक्टिंग सर्वर…</string>
+    <string name="drawer_header_unknown">अनजान</string>
+    <string name="alert_ok">ठीक</string>
+    <string name="alert_cancel">रद्द करना</string>
+    <string name="message_logout">क्या आप लॉग आउट करना चाहते हैं?</string>
+    <string name="message_exit">क्या आप वाकई ऐप बंद करना चाहते हैं?</string>
+    <string name="message_default_title">संदेश</string>
+    <string name="message_loading_travels">यात्रा सूची लोड हो रहा है</string>
+    <string name="title_travel">ट्रेवल्स</string>
+    <string name="drawer_travels">ट्रेवल्स</string>
+    <string name="drawer_edit_profile">प्रोफाइल एडिट करें</string>
+    <string name="drawer_invite_friends">निमंत्रण भेजना</string>
+    <string name="drawer_support">समर्थन</string>
+    <string name="drawer_about">बारे में</string>
+    <string name="drawer_exit">बाहर जाएं</string>
+    <string name="drawer_options">विकल्प</string>
+    <string name="distance_traveled">तय की गई दूरी</string>
+    <string name="time">पहर</string>
+    <string name="cost">यात्रा लागत</string>
+    <string name="prompt_enable_gps">क्या आप जीपीएस सक्षम करना चाहते हैं?</string>
+    <string name="prompt_location_service">आपको निम्न संवाद में DriverLocations सेवा को सक्षम करने की आवश्यकता है</string>
+    <string name="prompt_storage_rw">आपको निम्नलिखित संवाद में संग्रहण तक पहुंच प्रदान करने की आवश्यकता है</string>
+    <string name="prompt_contacts_rw">संपर्क ऐप कार्यक्षमता के लिए पढ़ें और लिखना आवश्यक है।</string>
+    <string name="service_card_cost">लागत: ₹% .2f</string>
+    <string name="unit_money">₹ %.2f</string>
+    <string name="unit_distance">%.1f Km</string>
+    <string name="unit_minute">%d min</string>
+    <string name="unit_second">%s sec</string>
+    <string name="alert_retry">पुन: प्रयास करें</string>
+    <string name="question_cancel_trip">क्या आप वाकई यात्रा रद्द करना चाहते हैं?</string>
+    <string name="service_canceled">सेवा रद्द कर दी गई थी</string>
+    <string name="write_complaint">शिकायत लिखें</string>
+    <string name="subject">विषय</string>
+    <string name="description">विवरण</string>
+    <string name="sending_complaint">शिकायत भेज रहा है…</string>
+    <string name="message_complaint_sent">शिकायत भेजी गई थी। आपसे जल्द ही हमसे संपर्क किया जाएगा।</string>
+    <string name="alert_send">भेजना</string>
+    <string name="saving_profile">प्रोफाइल सहेजा जा रहा है…</string>
+    <string name="about_contacts">संपर्क जानकारी</string>
+    <string name="version_name">संस्करण %s</string>
+    <string name="legal_notices">कानूनी सूचना</string>
+    <string name="mobile_number">मोबाइल नंबर</string>
+    <string name="id_header"># %d</string>
+    <string name="email_title">ई-मेल</string>
+    <string name="first_name">पहला नाम</string>
+    <string name="last_name">अंतिम नाम</string>
+    <string name="address">पता</string>
+
+    <!--Driver Specific Strings-->
+    <string name="driver_app_name">Q-CAB चालक</string>
+    <string name="about_driver_description">Q-CAB चालक आवेदन.</string>
+    <string name="request_list_label">अनुरोध सूची</string>
+    <string name="drawer_statistics">आंकड़े</string>
+    <string name="toolbar_driver_status">
+        चालक की स्थिति </string>
+    <string name="request_accept">स्वीकार करना</string>
+    <string name="request_decline">पतन</string>
+    <string name="travel_activity_buzz_button">भनभनाना</string>
+    <string name="travel_activity_call_request_button">कॉल अनुरोध</string>
+    <string name="travel_activity_wait_button">रुकिए</string>
+    <string name="travel_activity_start_travel_button">यात्रा शुरू करो</string>
+    <string name="travel_activity_finish_travel_button">यात्रा खत्म करो</string>
+    <string name="confirm_service_empty">सेवा की पुष्टि करें</string>
+    <string name="confirm_service">सेवा की पुष्टि करें %s</string>
+
+    <string name="call_requested">कॉल अनुरोध भेज रहा है.</string>
+    <string name="call_request_sent">कॉल अनुरोध भेजा गया.</string>
+    <string name="service_finished_credit">सेवा समाप्त हो चुकी है और आपके खाते में क्रेडिट जोड़ा गया है.</string>
+    <string name="service_finished_cash">सेवा समाप्त हो चुकी है लेकिन पर्याप्त क्रेडिट नहीं था। नकदी के लिए पूछो</string>
+    <string name="service_finishing">सेवा परिष्करण…</string>
+    <string name="title_activity_statistics">आय आंकड़े</string>
+    <string name="message_payment_request_sent">भुगतान अनुरोध भेजा गया है.</string>
+    <string name="request_payment">भुगतान का अनुरोध करें</string>
+    <string name="payment_request">भुगतान अनुरोध</string>
+    <string name="rating">रेटिंग</string>
+    <string name="services">सेवाएं</string>
+    <string name="total_income">कुल आय</string>
+    <string name="payment_bound">₹ %1.2f का ₹ %2.2f</string>
+    <string name="stats_daily">रोज</string>
+    <string name="stats_weekly">साप्ताहिक</string>
+    <string name="stats_monthly">महीने के</string>
+    <string name="upload_ride">अपनी सवारी की छवि अपलोड करें</string>
+    <string name="rides_color">सवारी का रंग</string>
+    <string name="ride_production_year">सवारी का उत्पादन वर्ष</string>
+    <string name="plate_number">थाली संख्या</string>
+    <string name="from">से</string>
+    <string name="to">To</string>
+    <string name="distance">दूरी</string>
+    <string name="from_you">आप से</string>
+    <string name="unit_distance_bare">Km</string>
+    <string name="unit_distance_miles">%.1f miles</string>
+    <string name="login_failed">लॉगिन विफल.</string>
+
+    <!--Rider Specific Strings-->
+    <string name="app_name">Q-CAB</string>
+    <string name="activity_settings">सेटिंग्स</string>
+    <string name="drawer_charge_account">बटुआ</string>
+    <string name="about_rider_description">Q-CAB राइडर आवेदन.</string>
+    <string name="drawer_header_balance">श्रेय: ₹ %.2f</string>
+    <string name="account_balance">खाते में शेष</string>
+    <string name="write_your_review_here">अपनी समीक्षा यहां लिखें…</string>
+    <string name="review_action">समीक्षा</string>
+    <string name="waiting_for_drivers">अनुरोध %s ड्राइवरों को भेजा गया है। प्रतिक्रिया के लिए इंतजार</string>
+    <string name="travel_finished_taken_from_balance">यात्रा समाप्त हो गई है और बैलेंस राशि की राशि: %.2f एफ को आपकी शेष राशि से हटा दिया गया है</string>
+    <string name="travel_finished_not_sufficient_balance">
+        यात्रा समाप्त हो गई है शेष राशि पर्याप्त नहीं थी। कृपया नकद में% .2f का भुगतान करें.</string>
+    <string name="notification_driver_in_location">ड्राइवर स्थान में चालक</string>
+    <string name="notification_requests_waiting"></string>
+    <string name="title_charge">चार्ज खाता </string>
+    <string name="checkout_empty">चेक आउट</string>
+    <string name="checkout_filled">चेक आउट %s</string>
+    <string name="checkout_online">ऑनलाइन</string>
+    <string name="checkout_stripe">पट्टी</string>
+    <string name="error_point_pickup_null">कोई पिकअप प्वाइंट चयनित नहीं है.</string>
+    <string name="error_point_dropoff_null">कोई ड्रॉप ऑफ प्वाइंट चयनित नहीं है.</string>
+    <string name="account_charge_success">वॉलेट क्रेडिट का सफलतापूर्वक शुल्क लिया गया है.</string>
+    <string name="charge_account_detail">कृपया वह राशि दर्ज करें जिसे आप अपने खाते से चार्ज करना चाहते हैं। तो आप उपरोक्त कार्ड में दर्ज किए गए एंड्रॉइड पे या क्रेडिट कार्ड की जानकारी का उपयोग करके आसानी से इसका भुगतान कर सकते हैं। </string>
+    <string name="origin">Origin</string>
+    <string name="destination">गंतव्य</string>
+    <string name="unknown_location">अनजान</string>
+    <string name="error_fill_credit_card">आपको पहले क्रेडिट कार्ड के विवरण भरना चाहिए.</string>
+    <string name="hide_travel">यात्रा छुपाएं</string>
+    <string name="error_704">Coupon code is invalid.</string>
+    <string name="error_703">Coupon code is already used.</string>
+    <string name="error_702">Coupon code is expired.</string>
+    <string name="warning">चेतावनी</string>
+    <string name="error">त्रुटि</string>
+    <string name="info">जानकारी</string>
+    <string name="error_408">
+        आपका अनुरोध समाप्त हो गया.</string>
+    <string name="error_666">अज्ञात त्रुटि अर्जित हुई.</string>
+    <string name="error_400">भुगतान के दौरान त्रुटि हुई.</string>
+    <string name="error_404">कोई ऑनलाइन चालक नहीं मिला.</string>
+    <string name="error_410">आपका संस्करण पुराना है। नए संस्करण में अपडेट करें.</string>
+    <string name="error_411">आपकी प्रोफ़ाइल बनाई गई है लेकिन एक ड्राइवर के रूप में आपकी प्रोफ़ाइल का मूल्यांकन और डैशबोर्ड से सक्षम होना चाहिए। </string>
+    <string name="error_412">आपकी प्रोफ़ाइल अक्षम कर दी गई है। इस में सहायता के लिए कृपया समर्थन से संपर्क करें.</string>
+    <string name="error_303">कोई चालक नहीं मिला.</string>
+    <string name="error_304">कोई रास्ता नहीं मिला.</string>
+    <string name="error_901">एक और भुगतान अनुरोध इंतजार कर रहा है.</string>
+    <string name="error_902">आपका क्रेडिट भुगतान का अनुरोध करने के लिए पर्याप्त नहीं है.</string>
+    <string name="error_903">पर्याप्त क्रेडिट न होने के कारण आपका खाता अस्थायी रूप से अक्षम कर दिया गया है.</string>
+    <string name="info_edit_profile_success">
+        प्रोफाइल सफलतापूर्वक संपादित.</string>
+    <string name="waiting_passenger">
+        स्वीकार्य रूप से यात्री के लिए प्रोफ़ाइल सफलतापूर्वक संपादित करें.</string>
+    <string name="trip_mode">यात्रा मोड</string>
+    <string name="error_select_trip_mode">यात्रा शुरू करने के लिए आपको एक यात्रा मोड का चयन करना होगा.</string>
+    <string name="error_no_trip_mode_found">आपके लिए कोई ट्रिप मोड सक्षम नहीं है। अपने टैरिफ को सक्षम करने के लिए व्यवस्थापक से संपर्क करें। यात्रा अब रद्द कर दी जा रही है|</string>
+    <string name="info_travel_hidden">
+        यात्रा जानकारी सफल छुपाएं।</string>
+    <string name="charge_amount">रकम</string>
+    <string name="message_permission_denied"><![CDATA[अगर आप अनुमति अस्वीकार करते हैं, तो आप इस सेवा का उपयोग नहीं कर सकते हैं कृपया अनुमतियां चालू करें [Setting] > [Permission]]]></string>
+    <string name="direct_call_rider">कॉल राइडर</string>
+    <string name="confirm_pickup_location">पिकअप स्थान की पुष्टि करें</string>
+    <string name="confirm_destination_location">गंतव्य स्थान की पुष्टि करें</string>
+    <string name="call">कॉल</string>
+    <string name="operator_call">ऑपरेटर कॉल का अनुरोध करें</string>
+    <string name="direct_call">सीधे कॉल करें</string>
+    <string name="message_review_sent">आप समीक्षा भेज दी गई है.</string>
+    <string name="select_contact_approach">संपर्क दृष्टिकोण का चयन करें</string>
+    <string name="gender_unknown">अनजान</string>
+    <string name="gender_male">पुरुष</string>
+    <string name="gender_female">महिला</string>
+    <string-array name="genders">
+        <item>Unknown</item>
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+    <string name="drawer_favorite_locations">पसंदीदा स्थान</string>
+    <string name="driver_card_eta">और</string>
+    <string name="driver_card_fee">
+        शुल्क</string>
+    <string name="driver_card_rating">रेटिंग</string>
+    <string name="driver_card_distance">दूरी</string>
+    <string name="looking_for_drivers">
+        ड्राइवरों की तलाश में ...</string>
+    <string name="request_time">समय मांगें</string>
+    <string name="finish_time">समय समाप्त</string>
+    <string name="duration">अवधि</string>
+    <string name="title">शीर्षक</string>
+    <string name="activity_address_title">पसंदीदा पते</string>
+    <string name="edit_address_dialog_title">पता संपादित करें</string>
+    <string name="add_address_dialog_title">
+        पता जोड़ें</string>
+    <string name="request_card_distance_from_you">आप से दूरी</string>
+    <string name="request_card_cost">लागत</string>
+    <string name="request_card_travel_distance">यात्रा दूरी</string>
+    <string name="start_travel">शुरु</string>
+    <string name="cancel_travel">रद्द करना</string>
+    <string name="finish_travel">समाप्त</string>
+    <string name="edit_address">संपादित करें</string>
+    <string name="delete_address">हटाना</string>
+    <string name="driver_id">आईडी</string>
+    <string name="review_dialog_title">समीक्षा</string>
+    <string name="gender">लिंग</string>
+    <string name="ucrop_label_original" tools:override="true">मूल</string>
+    <string name="ucrop_label_edit_photo" tools:override="true">फ़ोटो संपादित करें</string>
+    <string name="ucrop_menu_crop" tools:override="true">फ़सल</string>
+    <string name="warning_voice_recognizer_failed">वॉयस पहचानकर्ता यह समझने में असफल रहा कि आप क्या कह रहे थे।</string>
+    <string name="question_install_speech">आवाज खोज सेवा नहीं मिली। क्या आप इसे स्थापित करना चाहते हैं?</string>
+    <string name="search_default">खोज…</string>
+    <string name="message_travel_started">यात्रा शुरू कर दी गई है।</string>
+    <string name="error_invalid_email">अमान्य ईमेल पता</string>
+    <string name="picker_tap_select">चुनने के लिए टैप करें</string>
+    <string name="picker_folder">फ़ोल्डर</string>
+    <string name="message_enable_wifi">
+        इंटरनेट कनेक्शन के रूप में डेटा या वाईफाई सक्षम करें</string>
+    <string name="travel_status_requested">अनुरोधित सेवा</string>
+    <string name="travel_status_not_found">
+        नहीं मिला</string>
+    <string name="travel_status_no_close_found">कुछ भी नहीं मिला</string>
+    <string name="travel_status_found">
+        मिल गया</string>
+    <string name="travel_status_driver_accepted">चालक स्वीकृत</string>
+    <string name="travel_status_rider_accepted">राइडर स्वीकृत</string>
+    <string name="travel_status_driver_canceled">चालक रद्द कर दिया गया</string>
+    <string name="travel_status_rider_canceled">राइडर रद्द कर दिया</string>
+    <string name="travel_status_travel_started">यात्रा शुरू हुई</string>
+    <string name="travel_status_travel_finished_credit">यात्रा समाप्त (क्रेडिट)</string>
+    <string name="travel_status_travel_finished_cash">यात्रा समाप्त (नकदी)</string>
+    <string name="login_sending_message">
+        संदेश भेजना…</string>
+    <string name="verifying">
+        सत्यापन करें ...</string>
+    <string name="message_verification">अपना मोबाइल नंबर दर्ज करें जिसे आप सक्रियण कोड प्राप्त करना चाहते हैं।</string>
+    <string name="title_verification">
+        सत्यापन</string>
+    <string name="message_verify">एक कोड आपके फोन पर भेजा गया है। इसे यहां दाखिल करें।</string>
+    <string name="verify_code">सत्यापित करें</string>
+    <string name="activation_code">एक्टिवेशन कोड</string>
+    <string name="title_verify">कोड सत्यापित करें</string>
+    <string name="select_payment_method">भुगतान का तरीका चुनें:</string>
+    <string name="current_balance">वर्तमान शेष</string>
+    <string name="question_hide_travel">क्या आप वाकई यात्रा छुपाना चाहते हैं? यह क्रिया उलटा नहीं है हालांकि यात्रा जानकारी अभी भी ऑपरेटर के लिए उपलब्ध है.</string>
+    <string name="question_delete_address">क्या आप वाकई इस पते को हटाना चाहते हैं?</string>
+    <string name="message_enable_gps">आगे बढ़ने से पहले कृपया जीपीएस सक्षम करें।</string>
+    <string name="message_internet_connection">
+        इंटरनेट कनेक्शन के रूप में डेटा या वाईफाई सक्षम करें</string>
+    <string name="error_charge_field_empty">
+        राशि फ़ील्ड खाली नहीं हो सकती है.</string>
+    <string name="error_charge_field_low">राशि फ़ील्ड %d से कम नहीं हो सकती है.</string>
+    <string name="error_title_empty">शीर्षक फ़ील्ड खाली नहीं हो सकता है.</string>
+    <string name="error_content_empty">सामग्री क्षेत्र खाली नहीं हो सकता है.</string>
+    <string name="warning_no_favorite_place">आपने कोई पसंदीदा जगह नहीं जोड़ा है.</string>
+    <string name="tab_driver_info">
+        चालक जानकारी</string>
+    <string name="tab_statistics">आंकड़े</string>
+    <string name="tab_review">समीक्षा</string>
+    <string name="connection_dialog_title">कनेक्ट ...</string>
+    <string name="event_connect">
+        सफलतापूर्वक कनेक्ट किया गया</string>
+    <string name="event_disconnect">डिस्कनेक्ट किया गया</string>
+    <string name="event_connecting">कनेक्ट ...</string>
+    <string name="event_connect_error">कनेक्ट करने में त्रुटि</string>
+    <string name="event_connect_timeout">
+        टाइमआउट कनेक्ट करें</string>
+    <string name="event_reconnect">
+        फिर से कनेक्ट करें</string>
+    <string name="drawer_transactions">Transactions</string>
+    <string name="drawer_coupons">Coupons</string>
+    <string name="drawer_promotions">Promotions</string>
+    <string name="coupon_days_left">%d DAYS LEFT</string>
+    <string name="transaction_number"># %s</string>
+    <string name="coupon_select">SELECT</string>
+    <string name="coupon_days_left_bare">DAYS LEFT</string>
+    <string name="event_reconnecting">पुन: कनेक्ट ...</string>
+    <string name="event_reconnect_attempt">
+        पुनः कनेक्ट करने का प्रयास करें</string>
+    <string name="event_reconnect_error">पुनः कनेक्ट करने में त्रुटि</string>
+    <string name="event_reconnect_failed">पुनः कनेक्ट कनेक्ट</string>
+    <string name="travel_fee_dialog_title">यात्रा शुल्क</string>
+    <string name="travel_fee_dialog_content">यात्रा का शुल्क दर्ज करें:</string>
+    <string name="travel_fee_dialog_hint">
+        रकम</string>
+    <string name="travel_number_title">नहीं:%d </string>
+    <string name="recovery_travel_message_rider">आपके लिए एक अधूरा यात्रा मिली। क्या आप इसे फिर से शुरू करना चाहते हैं?</string>
+    <string name="recovery_travel_driver">आपके लिए एक अधूरा यात्रा मिली। इसे खत्म करने के लिए आपको स्क्रीन पर ले जाया जाएगा</string>
+    <string name="app_logo_name">
+        क्विक मूव
+        </string>
+    <string name="app_tagline">
+        हम आंदोलन में क्विकनेस जोड़ें</string>
+</resources>

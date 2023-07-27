@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\menu\\actionbar_save.xml",
+        "source": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\src\\main\\res\\menu\\actionbar_save.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\menu\\ef_image_picker_menu_main.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\imagepicker-1.12.0.aar\\29014799019253f018901ca46da65339\\res\\menu\\ef_image_picker_menu_main.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\menu\\ucrop_menu_activity.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\ucrop-2.2.1.aar\\4e69cd963e17c093ef3a6e4cdc8e9de5\\res\\menu\\ucrop_menu_activity.xml"
+    }
+]

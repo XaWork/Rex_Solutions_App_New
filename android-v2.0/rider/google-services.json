@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "490399322059",
+    "firebase_url": "https://utaxi-b1a35.firebaseio.com",
+    "project_id": "utaxi-b1a35",
+    "storage_bucket": "utaxi-b1a35.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:490399322059:android:832f2cca3901f29a3bb04e",
+        "android_client_info": {
+          "package_name": "com.utaxi.rider"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "490399322059-ktq81lmn8lkd03t7qj71ca63cpbk5dne.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNFZI6q4wRebvZBBLhYONDf8wKU_tsBgE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "490399322059-ktq81lmn8lkd03t7qj71ca63cpbk5dne.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

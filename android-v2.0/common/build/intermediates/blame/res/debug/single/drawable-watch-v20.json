@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\drawable-watch-v20\\common_google_signin_btn_text_dark_normal.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\play-services-auth-15.0.0.aar\\afef1100639b351e0c1d0d537dc46ce8\\res\\drawable-watch-v20\\common_google_signin_btn_text_dark_normal.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\drawable-watch-v20\\common_google_signin_btn_text_disabled.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\play-services-auth-15.0.0.aar\\afef1100639b351e0c1d0d537dc46ce8\\res\\drawable-watch-v20\\common_google_signin_btn_text_disabled.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\drawable-watch-v20\\common_google_signin_btn_text_light_normal.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\play-services-auth-15.0.0.aar\\afef1100639b351e0c1d0d537dc46ce8\\res\\drawable-watch-v20\\common_google_signin_btn_text_light_normal.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\drawable-watch-v20\\abc_dialog_material_background.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-27.1.0.aar\\e80d9ff80436fa873942a6ef7d84ed25\\res\\drawable-watch-v20\\abc_dialog_material_background.xml"
+    }
+]

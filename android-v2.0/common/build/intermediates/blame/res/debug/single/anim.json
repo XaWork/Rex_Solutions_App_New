@@ -1,0 +1,114 @@
+[
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\fui_slide_out_left.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\firebase-ui-auth-3.3.1.aar\\438a0a9d33efb8aa0b99dd2b3bee93fc\\res\\anim\\fui_slide_out_left.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\design_snackbar_out.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\design-27.1.0.aar\\7b039f646320b180d5c9d61275365aad\\res\\anim\\design_snackbar_out.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\abc_fade_in.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-27.1.0.aar\\e80d9ff80436fa873942a6ef7d84ed25\\res\\anim\\abc_fade_in.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\abc_slide_out_bottom.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-27.1.0.aar\\e80d9ff80436fa873942a6ef7d84ed25\\res\\anim\\abc_slide_out_bottom.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\alerter_pulse.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\alerter-2.0.4.aar\\7025d15ee2b83d7d0d9430e7452aebb7\\res\\anim\\alerter_pulse.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\abc_tooltip_enter.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-27.1.0.aar\\e80d9ff80436fa873942a6ef7d84ed25\\res\\anim\\abc_tooltip_enter.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\fui_slide_in_right.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\firebase-ui-auth-3.3.1.aar\\438a0a9d33efb8aa0b99dd2b3bee93fc\\res\\anim\\fui_slide_in_right.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\abc_fade_out.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-27.1.0.aar\\e80d9ff80436fa873942a6ef7d84ed25\\res\\anim\\abc_fade_out.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\ucrop_loader_circle_path.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\ucrop-2.2.1.aar\\4e69cd963e17c093ef3a6e4cdc8e9de5\\res\\anim\\ucrop_loader_circle_path.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\abc_slide_out_top.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-27.1.0.aar\\e80d9ff80436fa873942a6ef7d84ed25\\res\\anim\\abc_slide_out_top.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\alerter_slide_in_from_top.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\alerter-2.0.4.aar\\7025d15ee2b83d7d0d9430e7452aebb7\\res\\anim\\alerter_slide_in_from_top.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\abc_grow_fade_in_from_bottom.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-27.1.0.aar\\e80d9ff80436fa873942a6ef7d84ed25\\res\\anim\\abc_grow_fade_in_from_bottom.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\decelerate_cubic.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\core-0.9.6.0.aar\\24e7bdc7b9b41a29c890178982d81402\\res\\anim\\decelerate_cubic.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\design_snackbar_in.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\design-27.1.0.aar\\7b039f646320b180d5c9d61275365aad\\res\\anim\\design_snackbar_in.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\abc_slide_in_bottom.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-27.1.0.aar\\e80d9ff80436fa873942a6ef7d84ed25\\res\\anim\\abc_slide_in_bottom.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\popup_enter.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\core-0.9.6.0.aar\\24e7bdc7b9b41a29c890178982d81402\\res\\anim\\popup_enter.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\abc_popup_enter.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-27.1.0.aar\\e80d9ff80436fa873942a6ef7d84ed25\\res\\anim\\abc_popup_enter.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\interpolator_slight_overshoot.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\alerter-2.0.4.aar\\7025d15ee2b83d7d0d9430e7452aebb7\\res\\anim\\interpolator_slight_overshoot.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\abc_slide_in_top.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-27.1.0.aar\\e80d9ff80436fa873942a6ef7d84ed25\\res\\anim\\abc_slide_in_top.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\interpolator_slight_anticipate.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\alerter-2.0.4.aar\\7025d15ee2b83d7d0d9430e7452aebb7\\res\\anim\\interpolator_slight_anticipate.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\abc_tooltip_exit.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-27.1.0.aar\\e80d9ff80436fa873942a6ef7d84ed25\\res\\anim\\abc_tooltip_exit.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\design_bottom_sheet_slide_out.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\design-27.1.0.aar\\7b039f646320b180d5c9d61275365aad\\res\\anim\\design_bottom_sheet_slide_out.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\ucrop_loader_circle_scale.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\ucrop-2.2.1.aar\\4e69cd963e17c093ef3a6e4cdc8e9de5\\res\\anim\\ucrop_loader_circle_scale.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\abc_shrink_fade_out_from_bottom.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-27.1.0.aar\\e80d9ff80436fa873942a6ef7d84ed25\\res\\anim\\abc_shrink_fade_out_from_bottom.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\abc_popup_exit.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-27.1.0.aar\\e80d9ff80436fa873942a6ef7d84ed25\\res\\anim\\abc_popup_exit.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\alerter_slide_out_to_top.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\alerter-2.0.4.aar\\7025d15ee2b83d7d0d9430e7452aebb7\\res\\anim\\alerter_slide_out_to_top.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\popup_exit.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\core-0.9.6.0.aar\\24e7bdc7b9b41a29c890178982d81402\\res\\anim\\popup_exit.xml"
+    },
+    {
+        "merged": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\anim\\design_bottom_sheet_slide_in.xml",
+        "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\design-27.1.0.aar\\7b039f646320b180d5c9d61275365aad\\res\\anim\\design_bottom_sheet_slide_in.xml"
+    }
+]

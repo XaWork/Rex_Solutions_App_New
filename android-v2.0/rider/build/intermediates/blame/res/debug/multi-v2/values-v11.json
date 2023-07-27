@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\rider\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v11\\values-v11.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\core-0.9.6.0.aar\\24e7bdc7b9b41a29c890178982d81402\\res\\values-v11\\values-v11.xml",
+                    "from": {
+                        "startLines": "2,19",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,1044",
+                        "endLines": "18,35",
+                        "endColumns": "10,10",
+                        "endOffsets": "1039,2010"
+                    }
+                }
+            ]
+        }
+    ]
+}

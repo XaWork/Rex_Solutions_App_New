@@ -1,0 +1,116 @@
+{
+    "logs": [
+        {
+            "outputFile": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\values-night-v8\\values-night-v8.xml",
+            "map": [
+                {
+                    "source": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\src\\main\\res\\values-night\\bool.xml",
+                    "from": {
+                        "startLines": "1",
+                        "startColumns": "4",
+                        "startOffsets": "17",
+                        "endColumns": "40",
+                        "endOffsets": "53"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "40",
+                        "endOffsets": "91"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-27.1.0.aar\\e80d9ff80436fa873942a6ef7d84ed25\\res\\values-night-v8\\values-night-v8.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "55,125,209,293,389,491,593",
+                        "endColumns": "69,83,83,95,101,101,93",
+                        "endOffsets": "120,204,288,384,486,588,682"
+                    },
+                    "to": {
+                        "startLines": "8,9,10,11,12,13,14",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "379,449,533,617,713,815,917",
+                        "endColumns": "69,83,83,95,101,101,93",
+                        "endOffsets": "444,528,612,708,810,912,1006"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\android-about-page-1.2.1.aar\\54a2c7754191570580d920e2d63688e4\\res\\values-night-v8\\values-night-v8.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6",
+                        "startColumns": "4,4,4,4,4",
+                        "startOffsets": "55,112,175,231,287",
+                        "endColumns": "56,62,55,55,50",
+                        "endOffsets": "107,170,226,282,333"
+                    },
+                    "to": {
+                        "startLines": "3,4,5,6,7",
+                        "startColumns": "4,4,4,4,4",
+                        "startOffsets": "96,153,216,272,328",
+                        "endColumns": "56,62,55,55,50",
+                        "endOffsets": "148,211,267,323,374"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-night-v8\\values-night-v8.xml",
+            "map": [
+                {
+                    "source": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\src\\main\\res\\values-night\\bool.xml",
+                    "from": {
+                        "startLines": "1",
+                        "startColumns": "4",
+                        "startOffsets": "17",
+                        "endColumns": "40",
+                        "endOffsets": "53"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "40",
+                        "endOffsets": "91"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-27.1.0.aar\\e80d9ff80436fa873942a6ef7d84ed25\\res\\values-night-v8\\values-night-v8.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "55,125,209,293,389,491,593",
+                        "endColumns": "69,83,83,95,101,101,93",
+                        "endOffsets": "120,204,288,384,486,588,682"
+                    },
+                    "to": {
+                        "startLines": "8,9,10,11,12,13,14",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "379,449,533,617,713,815,917",
+                        "endColumns": "69,83,83,95,101,101,93",
+                        "endOffsets": "444,528,612,708,810,912,1006"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\android-about-page-1.2.1.aar\\54a2c7754191570580d920e2d63688e4\\res\\values-night-v8\\values-night-v8.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6",
+                        "startColumns": "4,4,4,4,4",
+                        "startOffsets": "55,112,175,231,287",
+                        "endColumns": "56,62,55,55,50",
+                        "endOffsets": "107,170,226,282,333"
+                    },
+                    "to": {
+                        "startLines": "3,4,5,6,7",
+                        "startColumns": "4,4,4,4,4",
+                        "startOffsets": "96,153,216,272,328",
+                        "endColumns": "56,62,55,55,50",
+                        "endOffsets": "148,211,267,323,374"
+                    }
+                }
+            ]
+        }
+    ]
+}

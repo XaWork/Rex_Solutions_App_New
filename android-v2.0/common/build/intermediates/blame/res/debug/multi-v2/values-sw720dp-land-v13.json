@@ -1,0 +1,34 @@
+{
+    "logs": [
+        {
+            "outputFile": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\res\\merged\\debug\\values-sw720dp-land-v13\\values-sw720dp-land-v13.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\core-0.9.6.0.aar\\24e7bdc7b9b41a29c890178982d81402\\res\\values-sw720dp-land-v13\\values-sw720dp-land-v13.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "51",
+                        "endOffsets": "102"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "E:\\Laysan\\work\\Manpreet_kaur\\qcab\\android-v2.0\\common\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-sw720dp-land-v13\\values-sw720dp-land-v13.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\Buzz\\.gradle\\caches\\transforms-1\\files-1.1\\core-0.9.6.0.aar\\24e7bdc7b9b41a29c890178982d81402\\res\\values-sw720dp-land-v13\\values-sw720dp-land-v13.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "51",
+                        "endOffsets": "102"
+                    }
+                }
+            ]
+        }
+    ]
+}
