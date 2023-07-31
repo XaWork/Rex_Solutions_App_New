@@ -36,9 +36,7 @@ fun UploadVehicleDataScreen() {
     var imgText by remember {
         mutableStateOf("No Image found.")
     }
-    Scaffold(topBar = {
-        RexMainTopAppBar(navigationIcon = { /*TODO*/ }) {}
-    }, content = {
+    Scaffold(content = {
         val padding = it
         Column(
             modifier = Modifier
@@ -47,6 +45,15 @@ fun UploadVehicleDataScreen() {
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+            VerticalSpace(space = 15.dp)
+            CustomFont(
+                text = "Vehicle Number",
+                fontSize = 18.sp,
+                color = Color.DarkGray,
+                fontWeight = FontWeight.Bold
+            )
+            VerticalSpace(space = 20.dp)
             Row(horizontalArrangement = Arrangement.SpaceBetween) {
                 ImageUploadPlaceholder(
                     height = 150.dp,
@@ -85,7 +92,7 @@ fun UploadVehicleDataScreen() {
             )
             VerticalSpace(space = 15.dp)
             RexButton(title = "Confirm & Submit") {
-                
+
             }
         }
     })
