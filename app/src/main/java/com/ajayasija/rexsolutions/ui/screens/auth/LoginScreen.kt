@@ -1,6 +1,5 @@
 package com.ajayasija.rexsolutions.ui.screens.auth
 
-import a2a.logistic.app.presentation.login.AuthEvents
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
