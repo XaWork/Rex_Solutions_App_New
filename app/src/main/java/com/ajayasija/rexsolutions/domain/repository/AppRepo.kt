@@ -1,6 +1,9 @@
 package com.ajayasija.rexsolutions.domain.repository
 
 import com.ajayasija.rexsolutions.data.Resource
+import com.ajayasija.rexsolutions.domain.model.AllocationImageAwsModel
+import com.ajayasija.rexsolutions.domain.model.AllocationStatusModel
+import com.ajayasija.rexsolutions.domain.model.InspectionHistoryModel
 import com.ajayasija.rexsolutions.domain.model.InspectionLeadModel
 import com.ajayasija.rexsolutions.domain.model.LoginModel
 import com.ajayasija.rexsolutions.domain.model.RegisterModel
@@ -21,4 +24,7 @@ interface AppRepo {
 
 
     suspend fun getInspection(memberId: String): Flow<Resource<InspectionLeadModel>>
+    suspend fun setAllocationStatus(map: HashMap<String, String>): Flow<Resource<AllocationStatusModel>>
+    suspend fun allocationImageAws(map: HashMap<String, String>): Flow<Resource<AllocationImageAwsModel>>
+    suspend fun inspectionHistory(map: HashMap<String, String>): Flow<Resource<InspectionHistoryModel>>
 }

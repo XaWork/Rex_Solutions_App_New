@@ -29,16 +29,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.ajayasija.rexsolutions.R
-import com.ajayasija.rexsolutions.data.UserPref
 import com.ajayasija.rexsolutions.domain.model.InspectionLeadModel
 import com.ajayasija.rexsolutions.ui.components.ContentTopWithUserInfo
 import com.ajayasija.rexsolutions.ui.components.CustomFont
+import com.ajayasija.rexsolutions.ui.components.RexCard
 import com.ajayasija.rexsolutions.ui.components.RexSurface
 import com.ajayasija.rexsolutions.ui.components.ShowLoading
 import com.ajayasija.rexsolutions.ui.components.ShowToast
@@ -48,34 +46,44 @@ import com.ajayasija.rexsolutions.ui.screens.home.InspectionViewModel
 
 @Composable
 fun InspectionLeadScreen(
+    viewModel: InspectionViewModel,
     onNavigateToUploadVehicleDataScreen: () -> Unit,
     onNavigateToProfileScreen: () -> Unit,
-    viewModel: InspectionViewModel = hiltViewModel()
 ) {
 
     var innerScale by remember { mutableStateOf(1f) }
 
     val state = viewModel.state
+
     if (state.isLoading)
         ShowLoading()
     else if (state.error != null)
         ShowToast(message = "Try again", context = LocalContext.current)
-    LaunchedEffect(key1 = true) {
-        viewModel.onEvent(HomeEvents.Inspection)
+    else if(state.accept) {
+        onNavigateToUploadVehicleDataScreen()
+        viewModel.onEvent(HomeEvents.ChangeAccept)
     }
+
+   /* LaunchedEffect(key1 = true) {
+        viewModel.onEvent(HomeEvents.Inspection)
+    }*/
 
     RexSurface(
         scrollState = rememberScrollState(0),
         contentTop = {
-            ContentTopWithUserInfo(UserPref(LocalContext.current)) { onNavigateToProfileScreen() }
+            ContentTopWithUserInfo(title = "Leading")
         }, content = {
             val leadItems = state.lead?.DATA_STATUS
             if (leadItems != null) {
-                for (item in leadItems) {
-                    SingleInspectionLeadItem(lead = item.preinspection) { lead ->
-                        onNavigateToUploadVehicleDataScreen()
-                    }
-                    Divider(thickness = 10.dp, color = Color.White)
+                for (i in leadItems.indices) {
+                    SingleInspectionLeadItem(lead = leadItems[i].preinspection, onItemClick = {
+                        viewModel.onEvent(HomeEvents.SetAllocation(i, "Y"))
+
+                       // onNavigateToUploadVehicleDataScreen()
+                    }, onCancel = {
+                        viewModel.onEvent(HomeEvents.SetAllocation(i, "N"))
+                    })
+                    VerticalSpace(space = 10.dp)
                 }
             } else
                 ShowLoading()
@@ -85,83 +93,83 @@ fun InspectionLeadScreen(
 @Composable
 fun SingleInspectionLeadItem(
     lead: InspectionLeadModel.DATASTATUS.Preinspection,
-    onItemClick: (InspectionLeadModel.DATASTATUS.Preinspection) -> Unit
+    onItemClick: () -> Unit,
+    onCancel: () -> Unit
 ) {
     var context = LocalContext.current
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(
-                color = MaterialTheme.colorScheme.primary,
-                shape = RoundedCornerShape(10.dp)
-            )
-            .padding(10.dp)
-            .clickable { onItemClick(lead) }
-    ) {
-        Row(
+    RexCard {
+        Column(
             modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
+                .fillMaxWidth()
+                .padding(10.dp)
+                .clickable { onItemClick() }
         ) {
-            val text = lead.run {
-                "$fldvRefNo - $fldvInsurrComName\n$fldvInsuredName | $fldvVhModel\n$fldvInsuredMobile\n$fldiVhId\n$fldvLocation\n$flddCustApDateTime"
-            }
-            Column(
-                modifier = Modifier.weight(5f)) {
-                CustomFont(
-                    text = text,
-                    fontSize = 16.sp,
-                    color = Color.White,
-                    textAlign = TextAlign.Start,
-                    maxLines = 10
-                )
-            }
-            Column(
+            Row(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .align(Alignment.CenterVertically)
-                    .weight(1f),
-                verticalArrangement = Arrangement.SpaceBetween,
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.call),
-                    contentDescription = "",
+                val text = lead.run {
+                    "$fldvRefNo - $fldvInsurrComName\n$fldvInsuredName\n$fldvVhModel\n$fldvInsuredMobile\n$fldiVhId\n$fldvLocation\n$flddCustApDateTime"
+                }
+                Column(modifier = Modifier.weight(1f)) {
+                    CustomFont(
+                        text = text,
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Start,
+                        maxLines = 10
+                    )
+                }
+                Column(
                     modifier = Modifier
-                        .size(40.dp)
-                        .background(color = Color.White, shape = RoundedCornerShape(5.dp))
-                        .padding(10.dp)
-                        .clickable {
-                            val phoneUri = Uri.parse("tel:${lead.fldvInsuredMobile}")
-                            val intent = Intent(Intent.ACTION_DIAL, phoneUri)
-                            context.startActivity(intent)
-                        }
-                )
-                VerticalSpace(space = 10.dp)
-                Image(
-                    painter = painterResource(id = R.drawable.whatsapp),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(40.dp)
-                        .align(Alignment.End)
-                        .background(color = Color.White, shape = RoundedCornerShape(5.dp))
-                        .padding(5.dp)
-                        .clickable {
-                            val phoneNumberUri =
-                                Uri.parse("https://api.whatsapp.com/send?phone=${lead.fldvInsuredMobile}")
-                            val intent = Intent(Intent.ACTION_VIEW, phoneNumberUri)
-                            context.startActivity(intent)
-                        }
-                )
-                VerticalSpace(space = 10.dp)
-                Image(
-                    painter = painterResource(id = R.drawable.cancel),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(40.dp)
-                        .align(Alignment.End)
-                        .background(color = Color.White, shape = RoundedCornerShape(5.dp))
-                        .padding(10.dp)
-                )
+                        .fillMaxHeight()
+                        .weight(.2f)
+                        .align(Alignment.CenterVertically),
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.call),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .background(color = Color.White, shape = RoundedCornerShape(5.dp))
+                            .padding(10.dp)
+                            .align(Alignment.End)
+                            .clickable {
+                                val phoneUri = Uri.parse("tel:${lead.fldvInsuredMobile}")
+                                val intent = Intent(Intent.ACTION_DIAL, phoneUri)
+                                context.startActivity(intent)
+                            }
+                    )
+                    VerticalSpace(space = 10.dp)
+                    Image(
+                        painter = painterResource(id = R.drawable.whatsapp),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .align(Alignment.End)
+                            .background(color = Color.White, shape = RoundedCornerShape(5.dp))
+                            .padding(5.dp)
+                            .clickable {
+                                val phoneNumberUri =
+                                    Uri.parse("https://api.whatsapp.com/send?phone=${lead.fldvInsuredMobile}")
+                                val intent = Intent(Intent.ACTION_VIEW, phoneNumberUri)
+                                context.startActivity(intent)
+                            }
+                    )
+                    VerticalSpace(space = 10.dp)
+                    Image(
+                        painter = painterResource(id = R.drawable.cancel),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .align(Alignment.End)
+                            .background(color = Color.White, shape = RoundedCornerShape(5.dp))
+                            .padding(10.dp)
+                            .clickable { onCancel() }
+                    )
+                }
             }
         }
     }
@@ -201,7 +209,8 @@ fun InspectionLeadScreenPreview() {
         softWrap = true,
         color = Color.White,
         maxLines = 20,
-        text = "Hellow how are you ?Hellow how are you ?Hellow how are you ?Hellow how are you ?Hellow how are you ?Hellow how are you ?Hellow how are you \n?Hellow how are you ?Hellow how are you ?Hellow how are you ?Hellow how are you ?Hellow how are you ?Hellow how are you ?Hellow how are you ?Hellow how are you ?Hellow how are you ?")
+        text = "Hellow how are you ?Hellow how are you ?Hellow how are you ?Hellow how are you ?Hellow how are you ?Hellow how are you ?Hellow how are you \n?Hellow how are you ?Hellow how are you ?Hellow how are you ?Hellow how are you ?Hellow how are you ?Hellow how are you ?Hellow how are you ?Hellow how are you ?Hellow how are you ?"
+    )
 }
 
 data class InspectionLead(

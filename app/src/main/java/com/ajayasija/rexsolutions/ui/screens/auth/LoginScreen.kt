@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ajayasija.rexsolutions.R
+import com.ajayasija.rexsolutions.ui.components.AuthSurface
 import com.ajayasija.rexsolutions.ui.components.CustomFont
 import com.ajayasija.rexsolutions.ui.components.RexButton
 import com.ajayasija.rexsolutions.ui.components.RexSurface
@@ -88,19 +89,10 @@ fun LoginScreen(
                 }
             })
     }
-    RexSurface(content =  {
-        Column(
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 50.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            VerticalSpace(space = 30.dp)
-            CustomFont(
-                text = "Login As Executive",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = primaryColor
-            )
-            VerticalSpace(space = 30.dp)
+    AuthSurface(
+        showAuthButtons = !userPref.isLoggedIn(),
+        content =  {
+        Column{
             RexTextField(
                 value = username,
                 onValueChange = {
@@ -151,7 +143,7 @@ fun LoginScreen(
                     })
 
             VerticalSpace(space = 30.dp)
-            ClickableText(text = buildAnnotatedString {
+            /*ClickableText(text = buildAnnotatedString {
                 append("Register as new user")
                 addStyle(
                     style = SpanStyle(
@@ -163,9 +155,11 @@ fun LoginScreen(
                 )
             }, onClick = {
                 onNavigateToRegisterScreen()
-            })
+            })*/
         }
-    })
+    }, onSignIn = {}, onSignUp = {
+        onNavigateToRegisterScreen()
+        })
 }
 
 

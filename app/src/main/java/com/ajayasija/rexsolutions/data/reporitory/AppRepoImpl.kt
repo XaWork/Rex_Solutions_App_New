@@ -2,6 +2,9 @@ package com.ajayasija.rexsolutions.data.reporitory
 
 import com.ajayasija.rexsolutions.data.Resource
 import com.ajayasija.rexsolutions.data.remote.ApiService
+import com.ajayasija.rexsolutions.domain.model.AllocationImageAwsModel
+import com.ajayasija.rexsolutions.domain.model.AllocationStatusModel
+import com.ajayasija.rexsolutions.domain.model.InspectionHistoryModel
 import com.ajayasija.rexsolutions.domain.model.InspectionLeadModel
 import com.ajayasija.rexsolutions.domain.model.LoginModel
 import com.ajayasija.rexsolutions.domain.model.RegisterModel
@@ -72,5 +75,53 @@ class AppRepoImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun setAllocationStatus(map: HashMap<String, String>): Flow<Resource<AllocationStatusModel>> {
+        return flow {
+            emit(Resource.Loading(true))
+            try {
+                val response = api.setAllocationStatus(map)
+                emit(Resource.Success(response))
+            } catch (io: IOException) {
+                io.printStackTrace()
+                emit(Resource.Error(message = "Couldn't load data"))
+            } catch (http: HttpException) {
+                http.printStackTrace()
+                emit(Resource.Error(message = "Couldn't load data"))
+            }
+        }
+    }
+
+    override suspend fun allocationImageAws(map: HashMap<String, String>): Flow<Resource<AllocationImageAwsModel>> {
+        return flow {
+            emit(Resource.Loading(true))
+            try {
+                val response = api.allocationImageAws(map)
+                emit(Resource.Success(response))
+            } catch (io: IOException) {
+                io.printStackTrace()
+                emit(Resource.Error(message = "Couldn't load data"))
+            } catch (http: HttpException) {
+                http.printStackTrace()
+                emit(Resource.Error(message = "Couldn't load data"))
+            }
+        }
+    }
+    override suspend fun inspectionHistory(map: HashMap<String, String>): Flow<Resource<InspectionHistoryModel>> {
+        return flow {
+            emit(Resource.Loading(true))
+            try {
+                val response = api.inspectionHistory(map)
+                emit(Resource.Success(response))
+            } catch (io: IOException) {
+                io.printStackTrace()
+                emit(Resource.Error(message = "Couldn't load data"))
+            } catch (http: HttpException) {
+                http.printStackTrace()
+                emit(Resource.Error(message = "Couldn't load data"))
+            }
+        }
+    }
+
 
 }
