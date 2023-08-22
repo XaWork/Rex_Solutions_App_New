@@ -22,4 +22,9 @@ sealed class HomeEvents {
         var video: Uri? = null,
         var context: Context
     ):HomeEvents()
+    data class GetInspectionHistory(
+        val context: Context,
+        val dateFrom: String,
+        val dateTo: String
+    ):HomeEvents()
 }

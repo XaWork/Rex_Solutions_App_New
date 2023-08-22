@@ -1,5 +1,6 @@
 package com.ajayasija.rexsolutions.data.reporitory
 
+import android.util.Log
 import com.ajayasija.rexsolutions.data.Resource
 import com.ajayasija.rexsolutions.data.remote.ApiService
 import com.ajayasija.rexsolutions.domain.model.AllocationImageAwsModel
@@ -112,6 +113,8 @@ class AppRepoImpl @Inject constructor(
             emit(Resource.Loading(true))
             try {
                 val response = api.inspectionHistory(map)
+
+                Log.e("Sheet", "response is : ${response.dATA}")
                 emit(Resource.Success(response))
             } catch (io: IOException) {
                 io.printStackTrace()

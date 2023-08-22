@@ -293,7 +293,7 @@ fun UploadVehicleDataScreen(
                         HomeEvents.SaveToLocal(
                             images,
                             context = context,
-                            video = if (vehVideo != null) vehVideo else null
+                           // video = if (vehVideo != null) vehVideo else null
                         )
                     )
                 }

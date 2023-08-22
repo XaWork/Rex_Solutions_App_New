@@ -16,6 +16,8 @@ class DBHandler(context: Context?) :
                 + VEHNO + " TEXT,"
                 + IMAGE_NAME + " TEXT,"
                 + IMAGE_PATH + " TEXT,"
+                + VIDEO_NAME + " TEXT,"
+                + VIDEO_PATH + " TEXT,"
                 + UPLOAD_STATUS + " TEXT,"
                 + API_STATUS + " TEXT)")
         db.execSQL(query)
@@ -56,6 +58,41 @@ class DBHandler(context: Context?) :
         }
     }
 
+    fun addVideoInspection(
+        LeadId: String,
+        vehNo: String,
+        videoName: String,
+        videoPath: String?,
+        upload_status: String?,
+        api_status: String?
+    ) {
+        try {
+            val db = this.writableDatabase
+
+            // on below line we are creating a
+            // variable for content values.
+            val values = ContentValues()
+
+            // on below line we are passing all values
+            // along with its key and value pair.
+            values.put(LEADID, LeadId)
+            values.put(VIDEO_NAME, videoName)
+            values.put(VIDEO_PATH, videoPath)
+            values.put(VEHNO, vehNo)
+            values.put(UPLOAD_STATUS, upload_status)
+            values.put(API_STATUS, api_status)
+            db.insert(TABLE_NAME, null, values)
+
+            // at last we are closing our
+            // database after adding database.
+            Log.d("LeadId ", "save:$LeadId")
+            Log.d("VideoName ", "save:$videoName")
+            db.close()
+        } catch (e: Exception) {
+            Log.d("errordb", "saving:$e")
+        }
+    }
+
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
     val imageUploadDetails: ArrayList<ImageData>
         get() {
@@ -77,6 +114,8 @@ class DBHandler(context: Context?) :
                     val vehNo = cursorCourses.getString(2)
                     val ImageName = cursorCourses.getString(3)
                     val ImagePath = cursorCourses.getString(4)
+                    //val videoName = cursorCourses.getString(5)
+                    //val videoPath = cursorCourses.getString(6)
                     val UploadStatus = cursorCourses.getString(5)
                             Log.d("Saved LeadId", ":$LeadId")
                     Log.d("Saved ImageName", ":$ImageName")
@@ -231,6 +270,10 @@ class DBHandler(context: Context?) :
         // below variable id for our course duration column.
         private const val IMAGE_NAME = "image_name"
         private const val IMAGE_PATH = "image_path"
+
+        private const val VIDEO_NAME = "video_name"
+        private const val VIDEO_PATH = "video_path"
+
         private const val UPLOAD_STATUS = "upload_status"
         private const val API_STATUS = "api_status"
 

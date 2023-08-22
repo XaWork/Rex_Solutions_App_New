@@ -6,5 +6,7 @@ data class ImageData(
     var VehNo: String? = null,
     var ImageName: String? = null,
     var ImagePath: String? = null,
+    var videoName: String? = null,
+    var videoPath: String? = null,
     var UploadStatus: String? = null
 )

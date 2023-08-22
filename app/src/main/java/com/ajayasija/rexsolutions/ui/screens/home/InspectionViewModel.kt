@@ -2,6 +2,7 @@ package com.ajayasija.rexsolutions.ui.screens.home
 
 import android.content.ContentResolver
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION
@@ -11,12 +12,14 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ajayasija.rexsolutions.data.DBHandler
 import com.ajayasija.rexsolutions.data.Resource
 import com.ajayasija.rexsolutions.data.UserPref
 import com.ajayasija.rexsolutions.domain.model.ImageData
+import com.ajayasija.rexsolutions.domain.model.InspectionHistoryModel
 import com.ajayasija.rexsolutions.domain.model.InspectionLeadModel
 import com.ajayasija.rexsolutions.domain.repository.AppRepo
 import com.amazonaws.auth.BasicAWSCredentials
@@ -27,9 +30,11 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
 import com.amazonaws.services.s3.AmazonS3Client
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.text.SimpleDateFormat
@@ -53,6 +58,10 @@ class InspectionViewModel @Inject constructor(
 
             is HomeEvents.UploadVehMedia -> {
                 uploadVehMedia(events.context)
+            }
+
+            is HomeEvents.GetInspectionHistory -> {
+                inspectionHistory(events.dateFrom, events.dateTo, events.context)
             }
 
             is HomeEvents.SaveToLocal -> {
@@ -292,10 +301,12 @@ class InspectionViewModel @Inject constructor(
         }
     }
 
-    private fun inspectionHistory(startDate: String, endDate: String) {
 
-        var map = hashMapOf(
-            "member_id" to userPref.getUser()!!.DATA_STATUS!!.member_id,
+    // ------------------------------ Get History --------------------------------
+    private fun inspectionHistory(startDate: String, endDate: String, context: Context) {
+
+        val map = hashMapOf(
+            "member_id" to userPref.getUser()!!.DATA_STATUS.member_id,
             "from_date" to startDate,
             "end_date" to endDate,
         )
@@ -308,13 +319,24 @@ class InspectionViewModel @Inject constructor(
                         }
 
                         is Resource.Success -> {
+                            Log.e("Sheet", "${result.data?.dATA}")
                             state = state.copy(
                                 isLoading = false,
                                 lead = null,
                                 inspectionHistory = result.data,
                                 error = null,
                             )
-                            getPreInspection()
+                            if (result.data?.dATA?.isNotEmpty() == true) {
+                                val filePath =
+                                    state.inspectionHistory?.dATA?.let {
+                                        generateExcel(context,
+                                            it
+                                        )
+                                    }
+                                if (filePath != null) {
+                                    provideDownload(context, filePath)
+                                }
+                            }
                         }
 
                         is Resource.Error -> {
@@ -328,6 +350,71 @@ class InspectionViewModel @Inject constructor(
                 }
         }
     }
+
+    private fun generateExcel(context: Context, data: List<InspectionHistoryModel.DATA>): String? {
+        val workbook = XSSFWorkbook()
+        val sheet = workbook.createSheet("Inspection Data")
+
+        // Create headers
+        val headerRow = sheet.createRow(0)
+        val headers = arrayOf(
+            "Full Name",
+            "Member ID",
+            "Vehicle No",
+            "Company Name",
+            "Customer Name",
+            "Customer Address",
+            "Date Time"
+        )
+        for ((index, header) in headers.withIndex()) {
+            headerRow.createCell(index).setCellValue(header)
+        }
+
+        // Populate data
+        var rowIndex = 1
+        for (ite in data) {
+            val row = sheet.createRow(rowIndex++)
+            val item = ite.inspectionData
+            row.createCell(0).setCellValue(item.fldvFullName)
+            row.createCell(1).setCellValue(item.fldiMemId)
+            row.createCell(2).setCellValue(item.vehicleNo)
+            row.createCell(3).setCellValue(item.compName)
+            row.createCell(4).setCellValue(item.customerName)
+            row.createCell(5).setCellValue(item.customerAddress)
+            row.createCell(6).setCellValue(item.customerDateTime)
+            Log.e("Sheet", "row is : $row")
+        }
+        Log.e("Sheet", "Sheet is $sheet")
+
+
+        // Save the workbook to a file
+        val filePath =
+            context.getExternalFilesDir(null)?.absolutePath + File.separator + "InspectionData.xlsx"
+        val file = File(filePath)
+        try {
+            val outputStream = FileOutputStream(file)
+            workbook.write(outputStream)
+            outputStream.close()
+            return filePath
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+        return null
+    }
+
+    private fun provideDownload(context: Context, filePath: String) {
+        val file = File(filePath)
+        val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+        context.grantUriPermission(context.packageName, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setDataAndType(uri, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+        context.startActivity(Intent.createChooser(intent, "Download Excel File"))
+    }
+
+    //---------------------- Save to local --------------------
 
     private fun saveToLocal(
         images: List<Uri>,
@@ -358,28 +445,26 @@ class InspectionViewModel @Inject constructor(
                 val myDate = Date()
                 val strDate = timeStampFormat.format(myDate)
                 val videoName: String = veh.fldiVhId + "_" + strDate + "_" + video + ".mp4"
+                val srcVideoFile: File = File(getVideoPath(video, context.contentResolver))
                 val destFile = File(myDir, videoName)
-                val out: OutputStream = FileOutputStream(destFile)
-                val uri: Uri = video/*
-                val srcFile =
-                    File(getPath(uri, context.contentResolver, args = MediaStore.Video.Media.DATA))*/
-                // Log.e("videoName", srcFile.toString())
-                /*val `in`: InputStream? = context.contentResolver.openInputStream(video)
+               // val out: OutputStream = FileOutputStream(destFile)
+                val uri: Uri = video
 
-                if (`in` != null) {
+                try{
+                    val `in`: InputStream = FileInputStream(srcVideoFile)
                     val out: OutputStream = FileOutputStream(destFile)
-
 
                     // Copy the bits from instream to outstream
                     val buf = ByteArray(1024)
                     var len: Int
-                    while ((`in`.read(buf).also { len = it }) > 0) {
+                    while (`in`.read(buf).also { len = it } > 0) {
                         out.write(buf, 0, len)
                     }
+
                     `in`.close()
                     out.close()
-                    Log.d("Out", "File:" + destFile.path)
-                    dbHandler.addInspection(
+
+                    dbHandler.addVideoInspection(
                         veh.fldiLeadId,
                         veh.fldiVhId,
                         videoName,
@@ -387,12 +472,12 @@ class InspectionViewModel @Inject constructor(
                         "N",
                         "N"
                     )
-                    //  copyFile(destFile, srcFile);
-                  //  Log.d("Src", ":" + srcFile.absolutePath)
-                    Log.d("Dest", ":" + destFile.absolutePath)
-                }else{
-                    Log.d("input", "INput stream is null")
-                }*/
+
+                    state = state.copy(isLoading = false, acceptedLead = null, error = null)
+                }catch (e: Exception){
+
+                }
+
 
             }
 
@@ -439,8 +524,8 @@ class InspectionViewModel @Inject constructor(
                     veh.fldiVhId,
                     imageName,
                     destFile.absolutePath,
-                    "N",
-                    "N"
+                    upload_status = "N",
+                    api_status = "N"
                 )
                 //  copyFile(destFile, srcFile);
                 Log.d("Src", ":" + srcFile.absolutePath)
@@ -478,5 +563,26 @@ class InspectionViewModel @Inject constructor(
         Log.e("filepath", "file path of media is : $filePath")
         return filePath
     }
+    private fun getVideoPath(
+        uri: Uri,
+        contentResolver: ContentResolver,
+        args: String = MediaStore.Video.Media.DATA
+    ): String? {
+        var filePath: String? = null
+
+        // Get the file path using the MediaStore API
+        val projection = arrayOf(args)
+        val cursor = contentResolver.query(uri, projection, null, null, null)
+        cursor?.use {
+            if (it.moveToFirst()) {
+                val columnIndex = it.getColumnIndexOrThrow(args)
+                filePath = it.getString(columnIndex)
+            }
+        }
+
+        Log.e("filepath", "file path of media is : $filePath")
+        return filePath
+    }
 
 }
+

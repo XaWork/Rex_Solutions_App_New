@@ -1,11 +1,12 @@
 package com.ajayasija.rexsolutions.ui.components
 
 import android.Manifest
+import android.app.ProgressDialog
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -14,10 +15,11 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import android.location.LocationManager
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.Build
 import android.provider.MediaStore
-import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -35,17 +37,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.core.app.ActivityCompat
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.arthenica.mobileffmpeg.Config
+import com.arthenica.mobileffmpeg.FFmpeg
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -75,19 +81,28 @@ fun MediaPicker(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
             if (uri != null) {
-                onImageSelect(addWatermarkToBitmap(uri, context))
+                onImageSelect(addWatermarkToImage(uri, context))
             }
         }
     )
 
     val videoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri -> onImageSelect(uri) }
+        onResult = { uri ->
+            onImageSelect(uri)
+           // onImageSelect(addWatermarkToVideo(uri!!,context))
+        }
     )
 
     val multiPhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(30),
-        onResult = { uri -> onMultipleImageSelect(uri) }
+        onResult = { uriList ->
+            val watermarkUriList = mutableListOf<Uri>()
+            uriList.forEach { uri ->
+                addWatermarkToImage(uri, context)?.let { watermarkUriList.add(it) }
+            }
+            onMultipleImageSelect(watermarkUriList)
+        }
     )
 
 
@@ -155,6 +170,7 @@ fun ChooseImageOptionsDialog(
 @Preview
 @Composable
 fun Previewview() {
+
 }
 
 fun gpsEnabled(context: Context): Boolean {
@@ -164,11 +180,11 @@ fun gpsEnabled(context: Context): Boolean {
     return if (locationEnabled) {
         true
     } else {
-      /*  val intent = Intent(
-            Settings.ACTION_LOCATION_SOURCE_SETTINGS,
-            Uri.fromParts("package", context.packageName, null)
-        )
-        context.startActivity(intent)*/
+        /*  val intent = Intent(
+              Settings.ACTION_LOCATION_SOURCE_SETTINGS,
+              Uri.fromParts("package", context.packageName, null)
+          )
+          context.startActivity(intent)*/
         false
     }
 
@@ -203,6 +219,16 @@ fun currentLocation(
     }
 }
 
+private fun getCurrentDateTime(video: Boolean = false): String? {
+    val sdf = SimpleDateFormat(
+        if (video) "dd MMM yyyy hh:mm a" else "dd MMM yyyy hh\\:mm a",
+        Locale.getDefault()
+    )
+    return sdf.format(Date())
+}
+
+//--------------------- image--------------------
+
 @RequiresApi(Build.VERSION_CODES.P)
 fun uriToBitmap(uri: Uri, context: Context): Bitmap {
     val contentResolver: ContentResolver = context.contentResolver
@@ -235,7 +261,7 @@ fun bitmapToUri(bitmap: Bitmap, context: Context): Uri? {
 }
 
 @RequiresApi(Build.VERSION_CODES.Q)
-private fun addWatermarkToBitmap(uri: Uri, context: Context): Uri? {
+private fun addWatermarkToImage(uri: Uri, context: Context): Uri? {
     val originalBitmap = uriToBitmap(uri, context)
 
     val desiredWidth = 800
@@ -272,8 +298,133 @@ private fun addWatermarkToBitmap(uri: Uri, context: Context): Uri? {
     return bitmapToUri(bitmap, context)
 }
 
+//-------------- video ----------------------------------
 
-private fun getCurrentDateTime(): String? {
-    val sdf = SimpleDateFormat("dd MMM yyyy hh:mm a", Locale.getDefault())
-    return sdf.format(Date())
+
+@OptIn(DelicateCoroutinesApi::class)
+fun addWatermarkToVideo(uri: Uri, context: Context): Uri {
+    val videoUri = getRealPathFromURI(context, uri) // Convert Uri to file path
+    val outputUri = getOutputVideoPath(context)
+    var location = ""
+    currentLocation(onLocationReceived = { lat, lng -> location = "Lat: $lat, Lng: $lng" }, context)
+    val dateTime = getCurrentDateTime(video = true)
+
+    //if (!location.isEmpty()) {
+    val uploading =
+        ProgressDialog.show(context, "Processing", "Please wait...", false, false)
+    val watermarkText = "          Rex solution\n          $dateTime\n$location"
+
+    Log.e(
+        "tag",
+        "Video uri path : $videoUri\n Output path : $outputUri\n$watermarkText"
+    )
+
+    val fontPath = "/system/fonts/Roboto-Regular.ttf"
+    val command = arrayOf(
+        "-i", videoUri,
+        "-vf",
+        "drawtext=text='$watermarkText':fontfile=$fontPath:x=(w-text_w-10):y=(h-text_h-10):fontsize=25:fontcolor=black",
+        "-c:v", "vp9",
+        "-crf", "20",
+        "-preset", "medium",
+        "-c:a", "copy",
+        outputUri
+    )
+
+    GlobalScope.launch(Dispatchers.IO) {
+        val rc = executeFFmpegCommand(command)
+        withContext(Dispatchers.Main) {
+            uploading.dismiss()
+            handleFFmpegResult(rc, outputUri, videoUri, context)
+        }
+    }
+
+    return Uri.parse(videoUri)
+}
+private fun executeFFmpegCommand(command: Array<String?>): Int {
+    return FFmpeg.execute(command)
+}
+
+private fun handleFFmpegResult(rc: Int, outputUri: String?, videoUri: String?, context: Context) {
+    if (rc == 0) {
+        Log.e("Variables.tag", "Command execution completed successfully.")
+        outputUri?.let { saveVideoToGallery(it, context) }
+        videoUri?.let { performDelete(it) }
+    } else if (rc == 255) {
+        Log.e("Variables.tag", "Command execution cancelled by user.")
+    } else {
+        Log.e(
+            "Variables.tag",
+            String.format(
+                "Command execution failed with rc=%d and the output below.$rc",
+                rc
+            )
+        )
+    }
+}
+
+private fun getRealPathFromURI(context: Context, uri: Uri): String? {
+    val projection = arrayOf(MediaStore.Video.Media.DATA)
+    val cursor: Cursor = context.contentResolver.query(uri, projection, null, null, null)!!
+    val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)
+    cursor.moveToFirst()
+    val path = cursor.getString(columnIndex)
+    cursor.close()
+    return path
+}
+
+private fun getOutputVideoPath(context: Context): String? {
+    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+    val outputFileName = "watermarked_video_$timeStamp.mp4"
+    val appFolderPath: String =
+        context.getExternalFilesDir(null)!!.absolutePath // Get the app folder path
+    return "$appFolderPath/$outputFileName"
+}
+
+private fun saveVideoToGallery(videoPath: String, context: Context) {
+    val values = ContentValues()
+    values.put(MediaStore.Video.Media.DATA, videoPath)
+    values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
+    context.contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values)
+    Toast.makeText(context, "Video saved to gallery", Toast.LENGTH_SHORT).show()
+}
+
+
+private fun performDelete(videoUri: String) {
+    /* if (videoUri != null) {
+            ContentResolver contentResolver = getContentResolver();
+            if (contentResolver != null) {
+                // Set the content Uri for video files in the MediaStore
+                Uri mediaUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+
+                // Create the selection criteria
+                String selection = MediaStore.Video.Media._ID + "=?";
+                String[] selectionArgs = new String[]{String.valueOf(ContentUris.parseId(videoUri))};
+
+                // Delete the video file
+                int deletedRows = contentResolver.delete(mediaUri, selection, selectionArgs);
+
+                // Check if the deletion was successful
+                if (deletedRows > 0) {
+                    Log.e("video", "Video deleted successfully");
+                } else {
+                    Log.e("video", "Video not deleted.");
+                }
+            }
+        }*/
+    val videoFile = File(videoUri)
+    if (videoFile.exists()) {
+        if (videoFile.canWrite()) {
+            if (videoFile.delete()) {
+               // Toast.makeText(this, "Video deleted successfully", Toast.LENGTH_SHORT).show()
+                Log.e("video delete", "Video deleted successfully")
+            } else {
+               // Toast.makeText(this, "Video not deleted.", Toast.LENGTH_SHORT).show()
+                Log.e("video delete", "Video not deleted.")
+            }
+        }
+    } else {
+        //Toast.makeText(this, "Video not found.", Toast.LENGTH_SHORT).show()
+        Log.e("video delete", "Video not found.")
+    }
 }

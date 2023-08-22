@@ -1,20 +1,33 @@
 package com.ajayasija.rexsolutions.domain.model
 
+
+import com.google.gson.annotations.SerializedName
+
 data class InspectionHistoryModel(
-    val DATa: List<DATA>
+    @SerializedName("DATA")
+    val dATA: List<DATA>
 ) {
     data class DATA(
-        val inspection_data: InspectionData
+        @SerializedName("inspection_data")
+        val inspectionData: InspectionData
     ) {
         data class InspectionData(
-            val comp_name: String,
-            val comp_ref_no: Any,
-            val customer_address: String,
-            val customer_date_time: String,
-            val customer_name: String,
+            @SerializedName("comp_name")
+            val compName: String,
+            @SerializedName("comp_ref_no")
+            val compRefNo: Any,
+            @SerializedName("customer_address")
+            val customerAddress: String,
+            @SerializedName("customer_date_time")
+            val customerDateTime: String,
+            @SerializedName("customer_name")
+            val customerName: String,
+            @SerializedName("fldiMemId")
             val fldiMemId: String,
+            @SerializedName("fldvFullName")
             val fldvFullName: String,
-            val vehicle_no: String
+            @SerializedName("vehicle_no")
+            val vehicleNo: String
         )
     }
 }
