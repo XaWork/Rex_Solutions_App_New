@@ -1,6 +1,7 @@
 package com.ajayasija.rexsolutions.ui.screens.inspection_lead
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -45,6 +46,7 @@ import com.ajayasija.rexsolutions.ui.components.ShowToast
 import com.ajayasija.rexsolutions.ui.components.VerticalSpace
 import com.ajayasija.rexsolutions.ui.screens.home.HomeEvents
 import com.ajayasija.rexsolutions.ui.screens.home.InspectionViewModel
+import java.io.File
 
 
 enum class GetMedia {
@@ -67,7 +69,7 @@ fun UploadVehicleDataScreen(
         mutableStateOf<Uri?>(null)
     }
     var vehVideo by remember {
-        mutableStateOf<Uri?>(null)
+        mutableStateOf<String?>(null)
     }
     var balancedImages by remember { mutableStateOf(mutableStateListOf<Uri>()) }
 
@@ -86,6 +88,11 @@ fun UploadVehicleDataScreen(
         onNavigateToHomeScreen()
     else if (state.error != null)
         ShowToast(message = state.error, context = context)
+    else if (state.uploadVideo != null) {
+        ShowToast(message = "Video upload successfully", context = context)
+        vehVideo = null
+        viewModel.state = viewModel.state.copy(uploadVideo = null)
+    }
 
     //change img text
     imgText = if (balancedImages.isNotEmpty())
@@ -117,16 +124,27 @@ fun UploadVehicleDataScreen(
     //photo picker
     var showPhotoPicker by remember { mutableStateOf(false) }
     var pickMultiple by remember { mutableStateOf(false) }
+    var showMediaChooserDialog by remember { mutableStateOf(false) }
     var video by remember { mutableStateOf(false) }
     var getMedia by remember { mutableStateOf("") }
-    MediaPicker(showPhotoPicker, pickMultiple, video, onImageSelect = {
-        when (getMedia) {
-            GetMedia.ODOMETER.name -> odometerPhoto = it
-            GetMedia.CHASSIS.name -> chassisPhoto = it
-            GetMedia.VIDEO.name -> vehVideo = it
-        }
-        showPhotoPicker = false
-    }) {
+    MediaPicker(
+        showPhotoPicker,
+        pickMultiple,
+        video,
+        showDialog = showPhotoPicker,
+        //changeDialogValue = { showMediaChooserDialog = it },
+        onImageSelect = {
+            when (getMedia) {
+                GetMedia.ODOMETER.name -> odometerPhoto = it
+                GetMedia.CHASSIS.name -> chassisPhoto = it
+                // GetMedia.VIDEO.name -> vehVideo = it
+            }
+            showPhotoPicker = false
+        },
+        onVideoSelect = {
+            vehVideo = it
+            showPhotoPicker = false
+        }) {
         showPhotoPicker = false
         balancedImages.addAll(
             if (it.size + balancedImages.size <= 30) it
@@ -266,10 +284,10 @@ fun UploadVehicleDataScreen(
             else
                 ImageWithRemoveButton(image = {
                     NetworkImage(
-                        model =  ImageRequest.Builder(LocalContext.current)
-                        .data("https://img.freepik.com/free-vector/flat-clapperboard-icon_1063-38.jpg")
-                        .crossfade(true)
-                        .build(),
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data("https://img.freepik.com/free-vector/flat-clapperboard-icon_1063-38.jpg")
+                            .crossfade(true)
+                            .build(),
                         modifier = Modifier
                             .height(150.dp),
                         contentScale = ContentScale.Crop
@@ -278,6 +296,12 @@ fun UploadVehicleDataScreen(
                     vehVideo = null
                 }
             VerticalSpace(space = 15.dp)
+            if (vehVideo != null) {
+                Log.e("video", "veh video $vehVideo")
+                RexButton(title = "Upload Video") {
+                    viewModel.onEvent(HomeEvents.UploadVideo(File(vehVideo)))
+                }
+            }
             RexButton(title = "Confirm & Submit") {
                 val images = mutableListOf<Uri>()
                 if (chassisPhoto == null && odometerPhoto == null && vehVideo == null && balancedImages.isEmpty()) {
@@ -293,7 +317,7 @@ fun UploadVehicleDataScreen(
                         HomeEvents.SaveToLocal(
                             images,
                             context = context,
-                           // video = if (vehVideo != null) vehVideo else null
+                            // video = if (vehVideo != null) vehVideo else null
                         )
                     )
                 }

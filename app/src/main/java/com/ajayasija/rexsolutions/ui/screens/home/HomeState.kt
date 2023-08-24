@@ -5,6 +5,7 @@ import com.ajayasija.rexsolutions.domain.model.AllocationStatusModel
 import com.ajayasija.rexsolutions.domain.model.ImageData
 import com.ajayasija.rexsolutions.domain.model.InspectionHistoryModel
 import com.ajayasija.rexsolutions.domain.model.InspectionLeadModel
+import com.ajayasija.rexsolutions.domain.model.VideoUploadModel
 
 data class HomeState(
     val isLoading: Boolean = false,
@@ -13,6 +14,7 @@ data class HomeState(
     val lead: InspectionLeadModel? = null,
     val allocationStatus: AllocationStatusModel? = null,
     val allocationImageAws: AllocationImageAwsModel? = null,
+    val uploadVideo: VideoUploadModel? = null,
     val inspectionHistory: InspectionHistoryModel? = null,
     val acceptedLead: InspectionLeadModel.DATASTATUS.Preinspection? = null,
     val pendingLeads: Int = 0,

@@ -15,8 +15,8 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import android.location.LocationManager
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Build
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
@@ -24,6 +24,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,10 +43,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.core.app.ActivityCompat
-import com.arthenica.mobileffmpeg.Config
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.FileProvider
+import com.amazonaws.mobile.auth.core.internal.util.ViewHelper.showDialog
 import com.arthenica.mobileffmpeg.FFmpeg
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -63,7 +67,10 @@ fun MediaPicker(
     launch: Boolean = false,
     pickMultiple: Boolean = false,
     video: Boolean = false,
+    showDialog: Boolean = false,
+    //changeDialogValue: (Boolean) -> Unit,
     onImageSelect: (Uri?) -> Unit,
+    onVideoSelect: (String?) -> Unit,
     onMultipleImageSelect: (List<Uri>) -> Unit,
 ) {
     /*var selectedImageUri by remember {
@@ -73,10 +80,9 @@ fun MediaPicker(
 
     Log.e("Permissions", "Button clicked media")
 
-    var showDialog by remember { mutableStateOf(false) }
-
     Log.e("photo", "Launch : $launch\npick Mutlitple : $pickMultiple\nvideo: $video")
 
+    // launcher
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
@@ -86,59 +92,132 @@ fun MediaPicker(
         }
     )
 
+    //take image using camera
+    var capturedImageUri by remember {
+        mutableStateOf<Uri>(Uri.EMPTY)
+    }
+
+    val cameraPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicturePreview(),
+        onResult = { bitmap ->
+            if (bitmap != null) {
+                val uri = bitmapToUri(bitmap, context)
+                val watermarkImage = uri?.let { it1 -> addWatermarkToImage(it1, context) }
+                if (pickMultiple) {
+                    onMultipleImageSelect(listOf(watermarkImage!!))
+                } else {
+                    onImageSelect(watermarkImage)
+                }
+            }
+        }
+    )
+
+    //video
     val videoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
-            onImageSelect(uri)
-           // onImageSelect(addWatermarkToVideo(uri!!,context))
+            if (uri != null) {
+                onVideoSelect(getRealPathFromURI(context, uri)?.let {
+                    addWatermarkToVideo(
+                        it,
+                        context
+                    )
+                })
+
+            }
+        }
+    )
+
+    val media = File.createTempFile("temp_file", ".mp4", context.applicationContext.cacheDir)
+    val fileUri = FileProvider.getUriForFile(
+        context,
+        "${context.packageName}.provider",
+        media
+    )
+    val videoCaptureLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CaptureVideo(),
+        onResult = { success ->
+            if (success) {
+                fileUri?.let {
+                    onVideoSelect(addWatermarkToVideo(media.absolutePath, context))
+                }
+                Log.e("video", "Success to record video")
+            }
         }
     )
 
     val multiPhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(30),
         onResult = { uriList ->
-            val watermarkUriList = mutableListOf<Uri>()
-            uriList.forEach { uri ->
-                addWatermarkToImage(uri, context)?.let { watermarkUriList.add(it) }
+            if (uriList.isNotEmpty()) {
+                val watermarkUriList = mutableListOf<Uri>()
+                uriList.forEach { uri ->
+                    addWatermarkToImage(uri, context)?.let { watermarkUriList.add(it) }
+                }
+                onMultipleImageSelect(watermarkUriList)
             }
-            onMultipleImageSelect(watermarkUriList)
         }
     )
 
+    //choose from gallery or camera
+    var camera by remember { mutableStateOf(false) }
+
 
     if (launch) {
-        if (!video) {
-            if (AllPermissionGranted(
-                    permissions = listOf(
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.CAMERA
-                    )
+        if (AllPermissionGranted(
+                permissions = listOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.RECORD_AUDIO
                 )
-            ) {
-                if (!pickMultiple)
-                    singlePhotoPickerLauncher.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                    )
-                else
-                    multiPhotoPickerLauncher.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                    )
-            }
-        } else {
-            videoPickerLauncher.launch(
-                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly)
             )
+        ) {
+            if (showDialog) {
+                ChooseImageOptionsDialog(showDialog = { }) {
+                    camera = it
+                    if (!video) {
+                        if (!pickMultiple && !camera) {
+                            singlePhotoPickerLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        } else if (pickMultiple && !camera)
+                            multiPhotoPickerLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        else
+                            cameraPickerLauncher.launch()
+                    } else {
+                        if (camera) {
+                            videoCaptureLauncher.launch(fileUri)
+                        } else {
+                            videoPickerLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly)
+                            )
+                        }
+                    }
+                }
+            }
         }
 
     }
 }
 
+fun createImageFile(context: Context): File {
+    // Create an image file name
+    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+    val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+    return File.createTempFile(
+        "JPEG_${timeStamp}_", //prefix
+        ".jpg", //suffix
+        storageDir //directory
+    )
+}
 
 @Composable
 fun ChooseImageOptionsDialog(
     showDialog: (Boolean) -> Unit,
-    onConfirm: () -> Unit
+    camera: (Boolean) -> Unit
 ) {
     Dialog(onDismissRequest = { showDialog(false) }) {
         Surface(shape = RoundedCornerShape(20.dp)) {
@@ -148,7 +227,7 @@ fun ChooseImageOptionsDialog(
                         title = "Camera",
                         textAllCaps = true,
                         onClick = {
-                            onConfirm()
+                            camera(true)
                             showDialog(false)
                         }
                     )
@@ -157,7 +236,7 @@ fun ChooseImageOptionsDialog(
                         title = "Gallery",
                         textAllCaps = true,
                         onClick = {
-                            onConfirm()
+                            camera(false)
                             showDialog(false)
                         }
                     )
@@ -239,7 +318,7 @@ fun uriToBitmap(uri: Uri, context: Context): Bitmap {
 
 @RequiresApi(Build.VERSION_CODES.Q)
 fun bitmapToUri(bitmap: Bitmap, context: Context): Uri? {
-    val displayName = "image.png"
+    val displayName = "image_${System.currentTimeMillis()}.png"
     val mimeType = "image/png"
     val contentResolver: ContentResolver = context.contentResolver
 
@@ -302,8 +381,8 @@ private fun addWatermarkToImage(uri: Uri, context: Context): Uri? {
 
 
 @OptIn(DelicateCoroutinesApi::class)
-fun addWatermarkToVideo(uri: Uri, context: Context): Uri {
-    val videoUri = getRealPathFromURI(context, uri) // Convert Uri to file path
+fun addWatermarkToVideo(videoUri: String, context: Context): String {
+    // Convert Uri to file path
     val outputUri = getOutputVideoPath(context)
     var location = ""
     currentLocation(onLocationReceived = { lat, lng -> location = "Lat: $lat, Lng: $lng" }, context)
@@ -339,8 +418,9 @@ fun addWatermarkToVideo(uri: Uri, context: Context): Uri {
         }
     }
 
-    return Uri.parse(videoUri)
+    return outputUri!!
 }
+
 private fun executeFFmpegCommand(command: Array<String?>): Int {
     return FFmpeg.execute(command)
 }
@@ -416,10 +496,10 @@ private fun performDelete(videoUri: String) {
     if (videoFile.exists()) {
         if (videoFile.canWrite()) {
             if (videoFile.delete()) {
-               // Toast.makeText(this, "Video deleted successfully", Toast.LENGTH_SHORT).show()
+                // Toast.makeText(this, "Video deleted successfully", Toast.LENGTH_SHORT).show()
                 Log.e("video delete", "Video deleted successfully")
             } else {
-               // Toast.makeText(this, "Video not deleted.", Toast.LENGTH_SHORT).show()
+                // Toast.makeText(this, "Video not deleted.", Toast.LENGTH_SHORT).show()
                 Log.e("video delete", "Video not deleted.")
             }
         }

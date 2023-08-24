@@ -128,6 +128,24 @@ fun AllPermissionGranted(
 
                             !it.status.isGranted && !it.status.shouldShowRationale -> {
                                 granted = false
+                                showDialog = false
+
+                            }
+                        }
+                    }
+
+                    Manifest.permission.RECORD_AUDIO -> {
+                        when {
+                            it.status.isGranted -> {
+                                granted = true
+                            }
+
+                            it.status.shouldShowRationale -> {
+                                granted = false
+                            }
+
+                            !it.status.isGranted && !it.status.shouldShowRationale -> {
+                                granted = false
                                 showDialog = true
 
                             }

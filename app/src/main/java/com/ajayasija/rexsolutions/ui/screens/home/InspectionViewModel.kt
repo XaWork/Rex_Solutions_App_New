@@ -31,16 +31,23 @@ import com.amazonaws.services.s3.AmazonS3Client
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import java.io.BufferedReader
+import java.io.DataOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.io.InputStreamReader
 import java.io.OutputStream
+import java.net.HttpURLConnection
+import java.net.MalformedURLException
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
+
 
 @HiltViewModel
 class InspectionViewModel @Inject constructor(
@@ -56,6 +63,11 @@ class InspectionViewModel @Inject constructor(
                 logOut()
             }
 
+            is HomeEvents.UploadVideo -> {
+                //state = state.copy(error = uploadVideo(events.path))
+                uploadVideos(events.file)
+            }
+
             is HomeEvents.UploadVehMedia -> {
                 uploadVehMedia(events.context)
             }
@@ -65,7 +77,7 @@ class InspectionViewModel @Inject constructor(
             }
 
             is HomeEvents.SaveToLocal -> {
-                saveToLocal(events.images, context = events.context, video = events.video)
+                saveToLocal(events.images, context = events.context, video = events.video,)
             }
 
             is HomeEvents.ChangeAccept -> {
@@ -83,24 +95,29 @@ class InspectionViewModel @Inject constructor(
         }
     }
 
-    private fun uploadVehMedia(context: Context) {
-        if (state.imageCount > 0) {
-            //  state = state.copy(isLoading = true)
-            val dbHandler = DBHandler(context)
+    private fun uploadVehMedia(context: Context, video: Boolean = false) {
+        val dbHandler = DBHandler(context)
+        if (video) {
 
-            val alImageData: ArrayList<ImageData> = dbHandler.imageUploadDetails
-            state = state.copy(allImageData = alImageData)
-            if (alImageData.size > 0) {
-                for (i in alImageData.indices) {
-                    val imageData: ImageData = alImageData[i]
-                    val imageFile = File(imageData.ImagePath)
-                    if (imageFile.exists()) {
-                        state = state.copy(uploadImageData = imageData)
-                        uploadDataToAws(context, imageData, dbHandler)
+        } else {
+            if (state.imageCount > 0) {
+                //  state = state.copy(isLoading = true)
+
+                val alImageData: ArrayList<ImageData> = dbHandler.imageUploadDetails
+                state = state.copy(isLoading = true, allImageData = alImageData)
+                if (alImageData.size > 0) {
+                    for (i in alImageData.indices) {
+                        val imageData: ImageData = alImageData[i]
+                        val imageFile = File(imageData.ImagePath)
+                        if (imageFile.exists()) {
+                            state = state.copy(uploadImageData = imageData)
+                            uploadDataToAws(context, imageData, dbHandler)
+                        }
                     }
                 }
             }
         }
+
     }
 
     private fun uploadDataToAws(context: Context, imageData: ImageData, dbHandler: DBHandler) {
@@ -177,7 +194,7 @@ class InspectionViewModel @Inject constructor(
         var map = hashMapOf(
             "fldiLeadId" to imageData.LeadId!!,
             "fldiMemId" to userPref.getUser()!!.DATA_STATUS.member_id,
-            "fldvRgBkImg" to "${imageData.ImageName}${imageData.LeadId}${imageData.ImageName}",
+            "fldvRgBkImg" to "${imageData.ImageName}",
         )
         viewModelScope.launch {
             repository.allocationImageAws(map)
@@ -205,6 +222,130 @@ class InspectionViewModel @Inject constructor(
                     }
                 }
         }
+    }
+
+    private fun uploadVideos(file: File) {
+        viewModelScope.launch {
+            repository.uploadVideo(userPref.getUser()?.DATA_STATUS!!.member_id, file)
+                .collect { result ->
+                    when (result) {
+                        is Resource.Loading -> {
+                            state = state.copy(isLoading = result.isLoading)
+                        }
+
+                        is Resource.Success -> {
+                            state = state.copy(
+                                isLoading = false,
+                                uploadVideo = result.data,
+                                error = null,
+                            )
+                        }
+
+                        is Resource.Error -> {
+                            state = state.copy(
+                                isLoading = false,
+                                error = result.message,
+                                lead = null
+                            )
+                        }
+                    }
+                }
+        }
+    }
+
+
+    private fun uploadVideo(file: String): String? {
+        var returnValue = ""
+        viewModelScope.launch {
+            state = state.copy(isLoading = true)
+            val UPLOAD_URL =
+                "http://rexsolution.co.in/android/allocation_video_aws.php?fldiLeadId=${state.acceptedLead?.fldiLeadId}"
+
+            var serverResponseCode = 0
+            //LeadId = fldiLeadId;
+            val L = "3474"
+            var conn: HttpURLConnection? = null
+            var dos: DataOutputStream? = null
+            val lineEnd = "\r\n"
+            val twoHyphens = "--"
+            val boundary = "*****"
+            var bytesRead: Int
+            var bytesAvailable: Int
+            var bufferSize: Int
+            val buffer: ByteArray
+            val maxBufferSize = 1 * 1024 * 1024 * 1024
+            val sourceFile = File(file)
+            if (!sourceFile.isFile) {
+                Log.e("Huzza", "Source File Does not exist")
+                state = state.copy(isLoading = false)
+                returnValue = ""
+            }
+            try {
+                val fileInputStream = FileInputStream(sourceFile)
+                val url = URL(UPLOAD_URL)
+                conn = url.openConnection() as HttpURLConnection
+                conn.doInput = true
+                conn!!.doOutput = true
+                conn.useCaches = false
+                conn.requestMethod = "POST"
+                conn.setRequestProperty("Connection", "Keep-Alive")
+                conn.setRequestProperty("ENCTYPE", "multipart/form-data")
+                conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=$boundary")
+                conn.setRequestProperty("fldvVideo", file)
+                dos = DataOutputStream(conn.outputStream)
+                dos.writeBytes(twoHyphens + boundary + lineEnd)
+                dos.writeBytes("Content-Disposition: form-data; name=fldvVideo;filename=$file$lineEnd")
+                //dos.writeBytes("Content-Disposition: form-data; name=\"fldvVideo\";filename=\"" + fileName +"fldiLeadId" lineEnd);
+                dos.writeBytes(lineEnd)
+                bytesAvailable = fileInputStream.available()
+                Log.i("Huzza", "Initial .available : $bytesAvailable")
+                bufferSize = Math.min(bytesAvailable, maxBufferSize)
+                buffer = ByteArray(bufferSize)
+                bytesRead = fileInputStream.read(buffer, 0, bufferSize)
+                while (bytesRead > 0) {
+                    dos.write(buffer, 0, bufferSize)
+                    bytesAvailable = fileInputStream.available()
+                    bufferSize = Math.min(bytesAvailable, maxBufferSize)
+                    bytesRead = fileInputStream.read(buffer, 0, bufferSize)
+                }
+                dos.writeBytes(lineEnd)
+                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd)
+                serverResponseCode = conn.responseCode
+                fileInputStream.close()
+                dos.flush()
+                dos.close()
+            } catch (ex: MalformedURLException) {
+                ex.printStackTrace()
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+            state = state.copy(isLoading = false)
+            if (serverResponseCode == 200) {
+                val sb = StringBuilder()
+                try {
+                    val rd = BufferedReader(
+                        InputStreamReader(
+                            conn
+                                ?.inputStream
+                        )
+                    )
+                    var line: String?
+                    while (rd.readLine().also { line = it } != null) {
+                        sb.append(line)
+                    }
+                    rd.close()
+                } catch (ioex: IOException) {
+                    Log.e("video", ioex.toString())
+                    ioex.printStackTrace()
+                }
+                //Toast.makeText(UploadImagesActivity.this, sb.toString(), Toast.LENGTH_SHORT).show();
+                returnValue = sb.toString()
+            } else {
+                // Toast.makeText(UploadImagesActivity.this,"Could not upload", Toast.LENGTH_SHORT).show();
+                returnValue = "Could not upload"
+            }
+        }
+        return returnValue
     }
 
     private fun getDataFromDB(
@@ -329,7 +470,8 @@ class InspectionViewModel @Inject constructor(
                             if (result.data?.dATA?.isNotEmpty() == true) {
                                 val filePath =
                                     state.inspectionHistory?.dATA?.let {
-                                        generateExcel(context,
+                                        generateExcel(
+                                            context,
                                             it
                                         )
                                     }
@@ -408,20 +550,22 @@ class InspectionViewModel @Inject constructor(
         val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
         context.grantUriPermission(context.packageName, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
         val intent = Intent(Intent.ACTION_VIEW)
-        intent.setDataAndType(uri, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        intent.setDataAndType(
+            uri,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
         context.startActivity(Intent.createChooser(intent, "Download Excel File"))
     }
 
     //---------------------- Save to local --------------------
-
     private fun saveToLocal(
         images: List<Uri>,
         video: Uri? = null,
         context: Context
     ) {
-        state = state.copy(isLoading = true, error = null)
+        state = state.copy(isLoading = true, error = null, uploadVideo = null)
         var dbHandler = DBHandler(context)
         val veh = state.acceptedLead!!
         try {
@@ -447,10 +591,10 @@ class InspectionViewModel @Inject constructor(
                 val videoName: String = veh.fldiVhId + "_" + strDate + "_" + video + ".mp4"
                 val srcVideoFile: File = File(getVideoPath(video, context.contentResolver))
                 val destFile = File(myDir, videoName)
-               // val out: OutputStream = FileOutputStream(destFile)
+                // val out: OutputStream = FileOutputStream(destFile)
                 val uri: Uri = video
 
-                try{
+                try {
                     val `in`: InputStream = FileInputStream(srcVideoFile)
                     val out: OutputStream = FileOutputStream(destFile)
 
@@ -474,7 +618,7 @@ class InspectionViewModel @Inject constructor(
                     )
 
                     state = state.copy(isLoading = false, acceptedLead = null, error = null)
-                }catch (e: Exception){
+                } catch (e: Exception) {
 
                 }
 
@@ -563,6 +707,7 @@ class InspectionViewModel @Inject constructor(
         Log.e("filepath", "file path of media is : $filePath")
         return filePath
     }
+
     private fun getVideoPath(
         uri: Uri,
         contentResolver: ContentResolver,

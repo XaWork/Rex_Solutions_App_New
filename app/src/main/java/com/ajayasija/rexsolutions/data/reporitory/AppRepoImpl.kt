@@ -9,10 +9,17 @@ import com.ajayasija.rexsolutions.domain.model.InspectionHistoryModel
 import com.ajayasija.rexsolutions.domain.model.InspectionLeadModel
 import com.ajayasija.rexsolutions.domain.model.LoginModel
 import com.ajayasija.rexsolutions.domain.model.RegisterModel
+import com.ajayasija.rexsolutions.domain.model.VideoUploadModel
 import com.ajayasija.rexsolutions.domain.repository.AppRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.HttpException
+import java.io.File
 import java.io.IOException
 import javax.inject.Inject
 
@@ -115,6 +122,29 @@ class AppRepoImpl @Inject constructor(
                 val response = api.inspectionHistory(map)
 
                 Log.e("Sheet", "response is : ${response.dATA}")
+                emit(Resource.Success(response))
+            } catch (io: IOException) {
+                io.printStackTrace()
+                emit(Resource.Error(message = "Couldn't load data"))
+            } catch (http: HttpException) {
+                http.printStackTrace()
+                emit(Resource.Error(message = "Couldn't load data"))
+            }
+        }
+    }
+
+    override suspend fun uploadVideo(
+        leadId: String,
+        videoFile: File
+    ): Flow<Resource<VideoUploadModel>> {
+        return flow {
+            emit(Resource.Loading(true))
+            try {
+                val requestFile: RequestBody =
+                    videoFile.asRequestBody("video/*".toMediaTypeOrNull())
+                val videoPart: MultipartBody.Part =
+                    MultipartBody.Part.createFormData("fldvVideo", videoFile.name, requestFile)
+                val response = api.uploadVideo(leadId, videoPart)
                 emit(Resource.Success(response))
             } catch (io: IOException) {
                 io.printStackTrace()

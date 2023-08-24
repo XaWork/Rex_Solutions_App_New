@@ -2,6 +2,7 @@ package com.ajayasija.rexsolutions.ui.screens.home
 
 import android.content.Context
 import android.net.Uri
+import java.io.File
 
 sealed class HomeEvents {
     object LogOut : HomeEvents()
@@ -10,6 +11,10 @@ sealed class HomeEvents {
     data class SetAllocation(
         val index: Int,
         val status: String
+    ):HomeEvents()
+
+    data class UploadVideo(
+        val file: File
     ):HomeEvents()
     data class Inspection(
         val context: Context

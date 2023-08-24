@@ -7,7 +7,9 @@ import com.ajayasija.rexsolutions.domain.model.InspectionHistoryModel
 import com.ajayasija.rexsolutions.domain.model.InspectionLeadModel
 import com.ajayasija.rexsolutions.domain.model.LoginModel
 import com.ajayasija.rexsolutions.domain.model.RegisterModel
+import com.ajayasija.rexsolutions.domain.model.VideoUploadModel
 import kotlinx.coroutines.flow.Flow
+import java.io.File
 
 interface AppRepo {
 
@@ -27,4 +29,5 @@ interface AppRepo {
     suspend fun setAllocationStatus(map: HashMap<String, String>): Flow<Resource<AllocationStatusModel>>
     suspend fun allocationImageAws(map: HashMap<String, String>): Flow<Resource<AllocationImageAwsModel>>
     suspend fun inspectionHistory(map: HashMap<String, String>): Flow<Resource<InspectionHistoryModel>>
+    suspend fun uploadVideo(leadId: String, videoFile: File): Flow<Resource<VideoUploadModel>>
 }

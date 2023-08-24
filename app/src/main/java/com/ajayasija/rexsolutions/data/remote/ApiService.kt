@@ -6,10 +6,14 @@ import com.ajayasija.rexsolutions.domain.model.InspectionHistoryModel
 import com.ajayasija.rexsolutions.domain.model.InspectionLeadModel
 import com.ajayasija.rexsolutions.domain.model.LoginModel
 import com.ajayasija.rexsolutions.domain.model.RegisterModel
+import com.ajayasija.rexsolutions.domain.model.VideoUploadModel
+import okhttp3.MultipartBody
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Query
 import retrofit2.http.QueryMap
 
@@ -35,7 +39,6 @@ interface ApiService {
     ): RegisterModel
 
 
-
     @GET("allocation_executive.php")
     suspend fun getInspection(
         @Query("member_id") userName: String,
@@ -55,5 +58,12 @@ interface ApiService {
     suspend fun inspectionHistory(
         @QueryMap map: HashMap<String, String>,
     ): InspectionHistoryModel
+
+    @Multipart
+    @POST("allocation_video_aws.php")
+    suspend fun uploadVideo(
+        @Query("fldiLeadId") leadId: String,
+        @Part videoPart: MultipartBody.Part
+    ): VideoUploadModel
 
 }
