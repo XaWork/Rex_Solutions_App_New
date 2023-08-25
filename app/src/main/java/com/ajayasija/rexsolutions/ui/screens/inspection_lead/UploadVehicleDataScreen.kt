@@ -141,6 +141,9 @@ fun UploadVehicleDataScreen(
             }
             showPhotoPicker = false
         },
+        onDismissMediaPicker = {
+            showPhotoPicker = false
+        },
         onVideoSelect = {
             vehVideo = it
             showPhotoPicker = false

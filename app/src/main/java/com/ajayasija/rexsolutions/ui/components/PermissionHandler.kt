@@ -42,12 +42,24 @@ fun AllPermissionGranted(
         mutableStateOf(false)
     }
 
+    var permissionText by remember {
+        mutableStateOf("This app needs access to your camera, location and microphone.\n Please allow all to move forward.")
+    }
+
+    var buttonText by remember {
+        mutableStateOf("Grant Permission")
+    }
+
     val context = LocalContext.current
 
+
     if (showDialog) {
-        PermissionDialog(onDismiss = {
-            showDialog=it
-        })
+        PermissionDialog(
+            permissionText,
+            onDismiss = {
+                showDialog = it
+            }, buttonText
+        )
         //ShowToast(message = "Go to setting ", context = context)
     }
 
@@ -69,7 +81,14 @@ fun AllPermissionGranted(
     })
 
     if (permissionStates.allPermissionsGranted) {
-        granted = true
+        if (gpsEnabled(context)) {
+            granted = true
+        } else {
+            permissionText = "Please enable GPS."
+            buttonText = "Enable GPS"
+            showDialog = true
+            granted = false
+        }
     } else {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -110,7 +129,7 @@ fun AllPermissionGranted(
                             }
 
                             !it.status.isGranted && !it.status.shouldShowRationale -> {
-                                 showDialog = true
+                                showDialog = true
                                 granted = false
                             }
                         }
