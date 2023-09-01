@@ -97,22 +97,19 @@ class InspectionViewModel @Inject constructor(
 
     private fun uploadVehMedia(context: Context, video: Boolean = false) {
         val dbHandler = DBHandler(context)
-        if (video) {
 
-        } else {
-            if (state.imageCount > 0) {
-                //  state = state.copy(isLoading = true)
+        if (state.imageCount > 0) {
+            //  state = state.copy(isLoading = true)
 
-                val alImageData: ArrayList<ImageData> = dbHandler.imageUploadDetails
-                state = state.copy(isLoading = true, allImageData = alImageData)
-                if (alImageData.size > 0) {
-                    for (i in alImageData.indices) {
-                        val imageData: ImageData = alImageData[i]
-                        val imageFile = File(imageData.ImagePath)
-                        if (imageFile.exists()) {
-                            state = state.copy(uploadImageData = imageData)
-                            uploadDataToAws(context, imageData, dbHandler)
-                        }
+            val alImageData: ArrayList<ImageData> = dbHandler.imageUploadDetails
+            state = state.copy(isLoading = true, allImageData = alImageData)
+            if (alImageData.size > 0) {
+                for (i in alImageData.indices) {
+                    val imageData: ImageData = alImageData[i]
+                    val imageFile = File(imageData.ImagePath)
+                    if (imageFile.exists()) {
+                        state = state.copy(uploadImageData = imageData)
+                        uploadDataToAws(context, imageData, dbHandler)
                     }
                 }
             }
@@ -226,7 +223,7 @@ class InspectionViewModel @Inject constructor(
 
     private fun uploadVideos(file: File) {
         viewModelScope.launch {
-            repository.uploadVideo(userPref.getUser()?.DATA_STATUS!!.member_id, file)
+            repository.uploadVideo(state.acceptedLead!!.fldiLeadId, file)
                 .collect { result ->
                     when (result) {
                         is Resource.Loading -> {
@@ -569,62 +566,6 @@ class InspectionViewModel @Inject constructor(
         var dbHandler = DBHandler(context)
         val veh = state.acceptedLead!!
         try {
-            if (video != null) {
-                val myDir: File =
-                    if (Build.VERSION_CODES.R > VERSION.SDK_INT) {
-                        File(
-                            Environment.getExternalStorageDirectory().path
-                                    + "//Rex"
-                        )
-                    } else {
-                        File(
-                            (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).path
-                                    + "//Rex")
-                        )
-                    }
-                if (!myDir.exists())
-                    myDir.mkdir()
-
-                val timeStampFormat = SimpleDateFormat("ddMMyyyy", Locale.ENGLISH)
-                val myDate = Date()
-                val strDate = timeStampFormat.format(myDate)
-                val videoName: String = veh.fldiVhId + "_" + strDate + "_" + video + ".mp4"
-                val srcVideoFile: File = File(getVideoPath(video, context.contentResolver))
-                val destFile = File(myDir, videoName)
-                // val out: OutputStream = FileOutputStream(destFile)
-                val uri: Uri = video
-
-                try {
-                    val `in`: InputStream = FileInputStream(srcVideoFile)
-                    val out: OutputStream = FileOutputStream(destFile)
-
-                    // Copy the bits from instream to outstream
-                    val buf = ByteArray(1024)
-                    var len: Int
-                    while (`in`.read(buf).also { len = it } > 0) {
-                        out.write(buf, 0, len)
-                    }
-
-                    `in`.close()
-                    out.close()
-
-                    dbHandler.addVideoInspection(
-                        veh.fldiLeadId,
-                        veh.fldiVhId,
-                        videoName,
-                        destFile.absolutePath,
-                        "N",
-                        "N"
-                    )
-
-                    state = state.copy(isLoading = false, acceptedLead = null, error = null)
-                } catch (e: Exception) {
-
-                }
-
-
-            }
-
             //upload images
             for (i in images.indices) {
                 val myDir: File

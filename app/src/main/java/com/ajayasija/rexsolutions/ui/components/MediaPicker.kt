@@ -115,12 +115,7 @@ fun MediaPicker(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
             if (uri != null) {
-                onVideoSelect(getRealPathFromURI(context, uri)?.let {
-                    addWatermarkToVideo(
-                        it,
-                        context
-                    )
-                })
+                onVideoSelect(getRealPathFromURI(context, uri))
 
             }
         }
@@ -137,7 +132,7 @@ fun MediaPicker(
         onResult = { success ->
             if (success) {
                 fileUri?.let {
-                    onVideoSelect(addWatermarkToVideo(media.absolutePath, context))
+                    onVideoSelect(media.absolutePath)
                 }
                 Log.e("video", "Success to record video")
             }

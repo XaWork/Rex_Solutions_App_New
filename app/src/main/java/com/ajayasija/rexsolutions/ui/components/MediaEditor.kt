@@ -92,7 +92,7 @@ fun addWatermarkToImage(uri: Uri, context: Context): Uri? {
     paint.textAlign = Paint.Align.RIGHT
 
     //get current time and location
-    var location = getCurrentLocation(context)
+    val location = getCurrentLocation(context)
     //currentLocation(onLocationReceived = { lat, lng -> location = "Lat: $lat, Lng: $lng" }, context)
     val dateTime = getCurrentDateTime()
 

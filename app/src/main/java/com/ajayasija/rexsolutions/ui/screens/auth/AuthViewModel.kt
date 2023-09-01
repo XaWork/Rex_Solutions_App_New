@@ -1,16 +1,28 @@
 package com.ajayasija.rexsolutions.ui.screens.auth
 
+import android.content.Context
+import android.util.Log
 import android.util.Patterns
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ajayasija.rexsolutions.data.DBHandler
 import com.ajayasija.rexsolutions.data.Resource
 import com.ajayasija.rexsolutions.data.UserPref
+import com.ajayasija.rexsolutions.domain.model.ImageData
+import com.ajayasija.rexsolutions.domain.model.RegisterFormData
 import com.ajayasija.rexsolutions.domain.repository.AppRepo
+import com.amazonaws.auth.BasicAWSCredentials
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
+import com.amazonaws.services.s3.AmazonS3Client
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,10 +39,22 @@ class AuthViewModel @Inject constructor(
                 login(events.username, events.password)
             }
 
+            is AuthEvents.ChangePassword -> {
+                changePassword(
+                    userPref.getUser()?.DATA_STATUS!!.member_id,
+                    events.oldPassword,
+                    events.newPassword,
+                    events.confirmPassword
+                )
+            }
+
             is AuthEvents.Register -> {
                 validate(
-                    events.fullName, events.mobile, events.email, events.dob, events.panNo,
-                    events.panImg, events.aadharNO, events.aadharImg
+                    events.context,
+                    RegisterFormData(
+                        events.fullName, events.mobile, events.email, events.dob, events.panNo,
+                        events.panImg, events.aadharNO, events.aadharImg
+                    )
                 )
             }
         }
@@ -69,49 +93,14 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    private fun validate(
-        fullName: String,
-        mobile: String,
-        email: String,
-        dob: String,
-        panNo: String,
-        panImg: String,
-        aadharNo: String,
-        aadharImg: String
-    ) {
-        if (fullName.isBlank() ||
-            mobile.isBlank() ||
-            email.isBlank() ||
-            dob.isBlank() ||
-            panNo.isBlank() ||
-            aadharNo.isBlank()
-        ) {
-            state = state.copy(error = "Fill all required fields")
-        } else if (mobile.length < 10)
-            state = state.copy(error = "Enter valid mobile number")
-        else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
-            state = state.copy(error = "Enter valid email address")
-        else if (panNo.length < 10)
-            state = state.copy(error = "Enter valid PAN no.")
-        else if (aadharNo.length < 12)
-            state = state.copy(error = "Enter valid Aadhar no.")
-        else
-            register(fullName, mobile, email, dob, panNo, panImg, aadharNo, aadharImg)
-
-    }
-
-    private fun register(
-        fullName: String,
-        mobile: String,
-        email: String,
-        dob: String,
-        panNo: String,
-        panImg: String,
-        aadharNo: String,
-        aadharImg: String
+    private fun changePassword(
+        memberId: String,
+        oldPassword: String,
+        newPassword: String,
+        confirmPassword: String
     ) {
         viewModelScope.launch {
-            repository.register(fullName, mobile, email, dob, panNo, panImg, aadharNo, aadharImg)
+            repository.changePassword(memberId, oldPassword, newPassword, confirmPassword)
                 .collect { result ->
                     when (result) {
                         is Resource.Loading -> {
@@ -119,20 +108,9 @@ class AuthViewModel @Inject constructor(
                         }
 
                         is Resource.Success -> {
-                            state = if (result.data?.actualinspection?.error_sts == 0)
-                                state.copy(
-                                    isLoading = false,
-                                    login = null,
-                                    register = result.data,
-                                    error = result.data.actualinspection.error_msg
-                                )
-                            else
-                                state.copy(
-                                    isLoading = false,
-                                    login = null,
-                                    error = result.data?.actualinspection?.error_msg
-                                )
-
+                            if (result.data?.changePassword?.errorSts == 0) {
+                                state = state.copy(error = "Password change successful")
+                            }
                         }
 
                         is Resource.Error -> {
@@ -146,4 +124,143 @@ class AuthViewModel @Inject constructor(
                 }
         }
     }
+
+    private fun validate(
+        context: Context,
+        registerFormData: RegisterFormData
+    ) {
+        registerFormData.run {
+            if (fullName.isBlank() ||
+                mobile.isBlank() ||
+                email.isBlank() ||
+                dob.isBlank() ||
+                panNo.isBlank() ||
+                aadharNo.isBlank()
+            ) {
+                state = state.copy(error = "Fill all required fields")
+            } else if (mobile.length < 10)
+                state = state.copy(error = "Enter valid mobile number")
+            else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
+                state = state.copy(error = "Enter valid email address")
+            else if (panNo.length < 10)
+                state = state.copy(error = "Enter valid PAN no.")
+            else if (aadharNo.length < 12)
+                state = state.copy(error = "Enter valid Aadhar no.")
+            else
+                uploadDataToAws(context, registerFormData)
+        }
+
+
+    }
+
+    private fun register(
+        registerFormData: RegisterFormData
+    ) {
+        viewModelScope.launch {
+            registerFormData.run {
+                repository.register(
+                    fullName,
+                    mobile,
+                    email,
+                    dob,
+                    panNo,
+                    File(panImg).name,
+                    aadharNo,
+                    File(aadharImg).name
+                )
+                    .collect { result ->
+                        when (result) {
+                            is Resource.Loading -> {
+                                state = state.copy(isLoading = result.isLoading)
+                            }
+
+                            is Resource.Success -> {
+                                state = if (result.data?.actualinspection?.error_sts == 0)
+                                    state.copy(
+                                        isLoading = false,
+                                        login = null,
+                                        register = result.data,
+                                        error = result.data.actualinspection.error_msg
+                                    )
+                                else
+                                    state.copy(
+                                        isLoading = false,
+                                        login = null,
+                                        error = result.data?.actualinspection?.error_msg
+                                    )
+
+                            }
+
+                            is Resource.Error -> {
+                                state = state.copy(
+                                    isLoading = false,
+                                    error = result.message,
+                                    login = null
+                                )
+                            }
+                        }
+                    }
+            }
+        }
+    }
+
+
+    private fun uploadDataToAws(
+        context: Context,
+        registerFormData: RegisterFormData,
+    ) {
+        state = state.copy(isLoading = true)
+        val registerImageList = listOf(registerFormData.aadharImg, registerFormData.panImg)
+        for (img in registerImageList) {
+            var uploadObserver: TransferObserver?
+            try {
+                val transferUtility = TransferUtility.builder()
+                    .defaultBucket("rexsolution")
+                    .context(context)
+                    .s3Client(
+                        AmazonS3Client(
+                            BasicAWSCredentials(
+                                "AKIA6L3OZX46QMLGQD5G",
+                                "0OPxnbtQtv1fkqTTTQPEw9ycx9czZSCGPe/4aTJy"
+                            )
+                        )
+                    )
+                    .build()
+                val image = File(img)
+                uploadObserver = transferUtility.upload(image.name, image)
+                uploadObserver.setTransferListener(object : TransferListener {
+                    override fun onStateChanged(id: Int, transformState: TransferState) {
+                        if (TransferState.COMPLETED == transformState) {
+                            Log.e("Transfer", "Successfully completed")
+                        } else if (TransferState.FAILED == transformState) {
+                            state =
+                                state.copy(isLoading = false, error = "Failed to upload, Try again")
+                            Log.e("Transfer", "failed to complete")
+                        }
+                    }
+
+                    override fun onProgressChanged(id: Int, bytesCurrent: Long, bytesTotal: Long) {
+                        val percentDonef = bytesCurrent.toFloat() / bytesTotal.toFloat() * 100
+                        val percentDone = percentDonef.toInt()
+                        Log.e("Transfer", "Percent completed $percentDone")
+
+                        //   tvFileName.setText("ID:" + id + "|bytesCurrent: " + bytesCurrent + "|bytesTotal: " + bytesTotal + "|" + percentDone + "%");
+                    }
+
+                    override fun onError(id: Int, ex: java.lang.Exception) {
+                        state = state.copy(isLoading = false, error = "Error : $ex")
+                        ex.printStackTrace()
+                        Log.d("Error upload", ":$ex")
+                    }
+                })
+            } catch (e: java.lang.Exception) {
+                state = state.copy(isLoading = false, error = "Error : $e")
+                Log.d("AWS", "error:$e")
+            }
+        }
+        state = state.copy(isLoading = false)
+        register(registerFormData)
+    }
+
+
 }

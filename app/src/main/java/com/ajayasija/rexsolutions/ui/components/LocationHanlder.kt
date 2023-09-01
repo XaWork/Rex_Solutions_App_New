@@ -39,7 +39,17 @@ fun getCurrentLocation(context: Context, video: Boolean = false): String? {
         val location = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
         val latitude = location?.latitude
         val longitude = location?.longitude
-        if (!video) "Lat: $latitude, Lng: $longitude" else "Lat\\: $latitude, Lng//: $longitude"
+        if (!video) "Lat: ${
+            String.format(
+                "%.7f",
+                latitude
+            )
+        }, Lng: ${String.format("%.7f", longitude)}" else "Lat\\: ${
+            String.format(
+                "%.7f",
+                latitude
+            )
+        }, Lng//: ${String.format("%.7f", longitude)}"
     } else {
         Log.e("location permission", "GPS disabled")
         ""

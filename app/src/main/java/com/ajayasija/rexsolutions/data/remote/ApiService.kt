@@ -2,6 +2,7 @@ package com.ajayasija.rexsolutions.data.remote
 
 import com.ajayasija.rexsolutions.domain.model.AllocationImageAwsModel
 import com.ajayasija.rexsolutions.domain.model.AllocationStatusModel
+import com.ajayasija.rexsolutions.domain.model.ChangePasswordModel
 import com.ajayasija.rexsolutions.domain.model.InspectionHistoryModel
 import com.ajayasija.rexsolutions.domain.model.InspectionLeadModel
 import com.ajayasija.rexsolutions.domain.model.LoginModel
@@ -24,6 +25,15 @@ interface ApiService {
         @Query("user_name") userName: String,
         @Query("user_pass") userPass: String
     ): LoginModel
+
+    @FormUrlEncoded
+    @POST("change_password.php")
+    suspend fun changePassword(
+        @Field("member_id") memberId: String,
+        @Field("old_password") oldPassword: String,
+        @Field("new_password") newPassword: String,
+        @Field("confirm_password") confirmPassword: String
+    ): ChangePasswordModel
 
     @FormUrlEncoded
     @POST("register_executive.php")
