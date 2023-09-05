@@ -2,6 +2,7 @@ package com.ajayasija.rexsolutions.ui.screens.home
 
 import android.content.Context
 import android.net.Uri
+import com.ajayasija.rexsolutions.domain.model.InspectionLeadModel
 import java.io.File
 
 sealed class HomeEvents {
@@ -9,8 +10,12 @@ sealed class HomeEvents {
     object ChangeAccept : HomeEvents()
 
     data class SetAllocation(
-        val index: Int,
-        val status: String
+        val lead: InspectionLeadModel.DATASTATUS.Preinspection,
+        val status: String,
+        val context: Context
+    ):HomeEvents()
+    data class AcceptLead(
+        val lead: InspectionLeadModel.DATASTATUS.Preinspection,
     ):HomeEvents()
 
     data class UploadVideo(

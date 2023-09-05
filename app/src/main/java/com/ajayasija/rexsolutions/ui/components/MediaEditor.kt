@@ -1,6 +1,5 @@
 package com.ajayasija.rexsolutions.ui.components
 
-import android.app.ProgressDialog
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
@@ -18,12 +17,6 @@ import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import com.arthenica.mobileffmpeg.FFmpeg
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.OutputStream
 import java.text.SimpleDateFormat
@@ -76,8 +69,8 @@ fun bitmapToUri(bitmap: Bitmap, context: Context): Uri? {
 fun addWatermarkToImage(uri: Uri, context: Context): Uri? {
     val originalBitmap = uriToBitmap(uri, context)
 
-    val desiredWidth = 800
-    val desiredHeight = 900
+    val desiredWidth = 900
+    val desiredHeight = 1000
     val matrix = Matrix()
     matrix.postRotate(0F)
     val resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, desiredWidth, desiredHeight, true)
@@ -93,10 +86,20 @@ fun addWatermarkToImage(uri: Uri, context: Context): Uri? {
 
     //get current time and location
     val location = getCurrentLocation(context)
-    //currentLocation(onLocationReceived = { lat, lng -> location = "Lat: $lat, Lng: $lng" }, context)
+    val latlng = "Lat: ${
+        String.format(
+            "%.7f",
+            location?.latitude
+        )
+    }, Lng: ${
+        String.format(
+            "%.7f",
+            location?.longitude
+        )
+    }"
     val dateTime = getCurrentDateTime()
 
-    val watermarkText = "Rex solution\n$dateTime\n$location"
+    val watermarkText = "Rex solution\n$dateTime\n$latlng"
     val lines = watermarkText.split("\n")
     val padding = 5
     val lineHeight = (paint.textSize + padding).toInt()
@@ -112,7 +115,7 @@ fun addWatermarkToImage(uri: Uri, context: Context): Uri? {
 
 //-------------- video ----------------------------------
 
-
+/*
 @OptIn(DelicateCoroutinesApi::class)
 fun addWatermarkToVideo(videoUri: String, context: Context): String {
     // Convert Uri to file path
@@ -174,7 +177,7 @@ private fun handleFFmpegResult(rc: Int, outputUri: String?, videoUri: String?, c
             )
         )
     }
-}
+}*/
 
 fun getRealPathFromURI(context: Context, uri: Uri): String? {
     val projection = arrayOf(MediaStore.Video.Media.DATA)

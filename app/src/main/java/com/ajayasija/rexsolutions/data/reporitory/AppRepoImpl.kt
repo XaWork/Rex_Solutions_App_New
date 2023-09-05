@@ -40,6 +40,9 @@ class AppRepoImpl @Inject constructor(
             } catch (http: HttpException) {
                 http.printStackTrace()
                 emit(Resource.Error(message = "Couldn't load data"))
+            }catch (http: Exception) {
+                http.printStackTrace()
+                emit(Resource.Error(message = "Couldn't load data"))
             }
         }
     }
@@ -59,6 +62,9 @@ class AppRepoImpl @Inject constructor(
                 io.printStackTrace()
                 emit(Resource.Error(message = "Couldn't load data"))
             } catch (http: HttpException) {
+                http.printStackTrace()
+                emit(Resource.Error(message = "Couldn't load data"))
+            }catch (http: Exception) {
                 http.printStackTrace()
                 emit(Resource.Error(message = "Couldn't load data"))
             }
@@ -86,6 +92,9 @@ class AppRepoImpl @Inject constructor(
             } catch (http: HttpException) {
                 http.printStackTrace()
                 emit(Resource.Error(message = "Couldn't load data"))
+            }catch (http: Exception) {
+                http.printStackTrace()
+                emit(Resource.Error(message = "Couldn't load data"))
             }
         }
     }
@@ -100,6 +109,9 @@ class AppRepoImpl @Inject constructor(
                 io.printStackTrace()
                 emit(Resource.Error(message = "Couldn't load data"))
             } catch (http: HttpException) {
+                http.printStackTrace()
+                emit(Resource.Error(message = "Couldn't load data"))
+            }catch (http: Exception) {
                 http.printStackTrace()
                 emit(Resource.Error(message = "Couldn't load data"))
             }
@@ -118,6 +130,9 @@ class AppRepoImpl @Inject constructor(
             } catch (http: HttpException) {
                 http.printStackTrace()
                 emit(Resource.Error(message = "Couldn't load data"))
+            }catch (http: Exception) {
+                http.printStackTrace()
+                emit(Resource.Error(message = "Couldn't load data"))
             }
         }
     }
@@ -132,6 +147,9 @@ class AppRepoImpl @Inject constructor(
                 io.printStackTrace()
                 emit(Resource.Error(message = "Couldn't load data"))
             } catch (http: HttpException) {
+                http.printStackTrace()
+                emit(Resource.Error(message = "Couldn't load data"))
+            }catch (http: Exception) {
                 http.printStackTrace()
                 emit(Resource.Error(message = "Couldn't load data"))
             }
@@ -149,6 +167,9 @@ class AppRepoImpl @Inject constructor(
                 io.printStackTrace()
                 emit(Resource.Error(message = "Couldn't load data"))
             } catch (http: HttpException) {
+                http.printStackTrace()
+                emit(Resource.Error(message = "Couldn't load data"))
+            }catch (http: Exception) {
                 http.printStackTrace()
                 emit(Resource.Error(message = "Couldn't load data"))
             }
@@ -172,6 +193,9 @@ class AppRepoImpl @Inject constructor(
                 io.printStackTrace()
                 emit(Resource.Error(message = "Couldn't load data"))
             } catch (http: HttpException) {
+                http.printStackTrace()
+                emit(Resource.Error(message = "Couldn't load data"))
+            }catch (http: Exception) {
                 http.printStackTrace()
                 emit(Resource.Error(message = "Couldn't load data"))
             }

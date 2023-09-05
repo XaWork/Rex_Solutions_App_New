@@ -54,6 +54,7 @@ fun InspectionLeadScreen(
     var innerScale by remember { mutableStateOf(1f) }
 
     val state = viewModel.state
+    val context = LocalContext.current
 
     if (state.isLoading)
         ShowLoading()
@@ -77,11 +78,11 @@ fun InspectionLeadScreen(
             if (leadItems != null) {
                 for (i in leadItems.indices) {
                     SingleInspectionLeadItem(lead = leadItems[i].preinspection, onItemClick = {
-                        viewModel.onEvent(HomeEvents.SetAllocation(i, "Y"))
+                        viewModel.onEvent(HomeEvents.AcceptLead(leadItems[i].preinspection))
 
                        // onNavigateToUploadVehicleDataScreen()
                     }, onCancel = {
-                        viewModel.onEvent(HomeEvents.SetAllocation(i, "N"))
+                        viewModel.onEvent(HomeEvents.SetAllocation(leadItems[i].preinspection, "N", context))
                     })
                     VerticalSpace(space = 10.dp)
                 }

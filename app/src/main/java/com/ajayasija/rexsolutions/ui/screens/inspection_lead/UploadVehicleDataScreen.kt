@@ -3,6 +3,7 @@ package com.ajayasija.rexsolutions.ui.screens.inspection_lead
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,7 +22,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -140,7 +140,7 @@ fun UploadVehicleDataScreen(
     // -----------------------  Condition UI ---------------------
     if (state.isLoading)
         ShowLoading()
-    else if (state.acceptedLead == null)
+    else if (state.acceptedLead == null && state.allocationStatus !=null)
         onNavigateToHomeScreen()
     else if (state.error != null)
         ShowToast(message = state.error, context = context)
@@ -821,7 +821,7 @@ fun UploadVehicleDataScreen(
                 if (tyre1Photo == null)
                     ImageUploadPlaceholder(
                         height = 150.dp,
-                        text = "Type 1",
+                        text = "Tyre 1",
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
@@ -1200,7 +1200,7 @@ fun UploadVehicleDataScreen(
                 Log.e("video", "veh video $vehVideo")
                 RexButton(title = "Upload Video") {
                     if (vehVideo != null)
-                        viewModel.onEvent(HomeEvents.UploadVideo(File(vehVideo)))
+                        viewModel.onEvent(HomeEvents.UploadVideo(File(vehVideo!!)))
                     else {
                         toastMessage = "Please select video"
                         showToast = true
@@ -1244,6 +1244,7 @@ fun UploadVehicleDataScreen(
                     showToast = true
                     toastMessage = "Please select image"
                 } else {
+                    Toast.makeText(context, "Wait a minute, Don't press any button.", Toast.LENGTH_LONG).show()
                     chassisNumberPhoto?.let { it1 -> images.add(it1) }
                     odometerPhoto?.let { it1 -> images.add(it1) }
                     registrationBookPhoto?.let { it1 -> images.add(it1) }

@@ -3,6 +3,7 @@ package com.ajayasija.rexsolutions.ui.components
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Location
 import android.location.LocationManager
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -20,7 +21,7 @@ fun gpsEnabled(context: Context): Boolean {
 }
 
 
-fun getCurrentLocation(context: Context, video: Boolean = false): String? {
+fun getCurrentLocation(context: Context): Location? {
     // Check location permission
     val permissionList = listOf(
         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -39,20 +40,22 @@ fun getCurrentLocation(context: Context, video: Boolean = false): String? {
         val location = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
         val latitude = location?.latitude
         val longitude = location?.longitude
-        if (!video) "Lat: ${
+        location
+       /* if (!video) "Lat: ${
             String.format(
                 "%.7f",
                 latitude
             )
-        }, Lng: ${String.format("%.7f", longitude)}" else "Lat\\: ${
+        }, Lng: ${String.format("%.7f", longitude)}"
+        else "Lat\\: ${
             String.format(
                 "%.7f",
                 latitude
             )
-        }, Lng//: ${String.format("%.7f", longitude)}"
+        }, Lng//: ${String.format("%.7f", longitude)}"*/
     } else {
         Log.e("location permission", "GPS disabled")
-        ""
+        null
     }
 }
 

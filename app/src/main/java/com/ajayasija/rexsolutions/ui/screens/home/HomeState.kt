@@ -18,6 +18,7 @@ data class HomeState(
     val inspectionHistory: InspectionHistoryModel? = null,
     val acceptedLead: InspectionLeadModel.DATASTATUS.Preinspection? = null,
     val pendingLeads: Int = 0,
+    val homePendingLeads: Int = 0,
     val imageCount: Int = 0,
     val totalLeads: Int = 0,
     val totalImages: Int = 0,

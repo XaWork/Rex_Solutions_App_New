@@ -18,10 +18,12 @@ import androidx.lifecycle.viewModelScope
 import com.ajayasija.rexsolutions.data.DBHandler
 import com.ajayasija.rexsolutions.data.Resource
 import com.ajayasija.rexsolutions.data.UserPref
+import com.ajayasija.rexsolutions.domain.model.AllocationImageAwsModel
 import com.ajayasija.rexsolutions.domain.model.ImageData
 import com.ajayasija.rexsolutions.domain.model.InspectionHistoryModel
 import com.ajayasija.rexsolutions.domain.model.InspectionLeadModel
 import com.ajayasija.rexsolutions.domain.repository.AppRepo
+import com.ajayasija.rexsolutions.ui.components.getCurrentLocation
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver
@@ -56,6 +58,7 @@ class InspectionViewModel @Inject constructor(
 ) : ViewModel() {
 
     var state by mutableStateOf(HomeState())
+    private var responseList = emptyList<AllocationImageAwsModel>()
 
     fun onEvent(events: HomeEvents) {
         when (events) {
@@ -77,7 +80,8 @@ class InspectionViewModel @Inject constructor(
             }
 
             is HomeEvents.SaveToLocal -> {
-                saveToLocal(events.images, context = events.context, video = events.video,)
+                setAllocation(lead = state.acceptedLead!!, "Y", context = events.context)
+                saveToLocal(events.images, context = events.context, video = events.video)
             }
 
             is HomeEvents.ChangeAccept -> {
@@ -89,8 +93,13 @@ class InspectionViewModel @Inject constructor(
             }
 
             is HomeEvents.SetAllocation -> {
-                var lead = state.lead!!.DATA_STATUS[events.index].preinspection
-                setAllocation(lead, events.status)
+                val lead = events.lead
+                setAllocation(lead, events.status, events.context)
+            }
+
+            is HomeEvents.AcceptLead -> {
+                val lead = events.lead
+                state = state.copy(acceptedLead = lead, accept = true)
             }
         }
     }
@@ -102,9 +111,13 @@ class InspectionViewModel @Inject constructor(
             //  state = state.copy(isLoading = true)
 
             val alImageData: ArrayList<ImageData> = dbHandler.imageUploadDetails
+            Log.e("image data before", alImageData.toString())
+            // alImageData.sortBy { it.ImageName!! }
+            //Log.e("image data after", alImageData.toString())
             state = state.copy(isLoading = true, allImageData = alImageData)
             if (alImageData.size > 0) {
                 for (i in alImageData.indices) {
+                    Log.e("image data one by one", alImageData[i].toString())
                     val imageData: ImageData = alImageData[i]
                     val imageFile = File(imageData.ImagePath)
                     if (imageFile.exists()) {
@@ -112,6 +125,7 @@ class InspectionViewModel @Inject constructor(
                         uploadDataToAws(context, imageData, dbHandler)
                     }
                 }
+                Log.e("Upload", responseList.toString());
             }
         }
 
@@ -202,6 +216,8 @@ class InspectionViewModel @Inject constructor(
                         }
 
                         is Resource.Success -> {
+                            Log.e("response home", result.data.toString())
+                            //  responseList.add(result.data!!)
                             state = state.copy(
                                 isLoading = false,
                                 allocationImageAws = result.data,
@@ -379,7 +395,7 @@ class InspectionViewModel @Inject constructor(
                             state = state.copy(
                                 isLoading = false,
                                 lead = result.data,
-                                pendingLeads = result.data?.DATA_STATUS?.size!!,
+                                homePendingLeads = result.data?.DATA_STATUS?.size!!,
                                 error = null,
                             )
                         }
@@ -396,15 +412,21 @@ class InspectionViewModel @Inject constructor(
         }
     }
 
-    private fun setAllocation(lead: InspectionLeadModel.DATASTATUS.Preinspection, status: String) {
-
-        var map = hashMapOf(
+    private fun setAllocation(
+        lead: InspectionLeadModel.DATASTATUS.Preinspection,
+        status: String,
+        context: Context
+    ) {
+        val location = getCurrentLocation(context)
+        val map = hashMapOf(
             "fldiLeadId" to lead.fldiLeadId,
             "fldiTrnsId" to lead.fldiTrnsId,
             "fldcStatus" to status,
             "fldvExeRemark" to "",
             "flddPPDate" to lead.flddPPDate,
             "FldiVhId" to lead.fldiVhId,
+            "fldiLat" to (location?.latitude?.toString() ?: ""),
+            "fldiLong" to (location?.longitude?.toString() ?: ""),
         )
         viewModelScope.launch {
             repository.setAllocationStatus(map)
@@ -422,7 +444,7 @@ class InspectionViewModel @Inject constructor(
                                 allocationStatus = result.data,
                                 error = null,
                                 accept = status == "Y",
-                                acceptedLead = if (status == "Y") lead else null
+                                acceptedLead = null //if (status == "Y") lead else
                             )
                             getPreInspection()
                         }
@@ -562,10 +584,10 @@ class InspectionViewModel @Inject constructor(
         video: Uri? = null,
         context: Context
     ) {
-        state = state.copy(isLoading = true, error = null, uploadVideo = null)
-        var dbHandler = DBHandler(context)
-        val veh = state.acceptedLead!!
         try {
+            var dbHandler = DBHandler(context)
+            val veh = state.acceptedLead!!
+            state = state.copy(isLoading = true, error = null, uploadVideo = null)
             //upload images
             for (i in images.indices) {
                 val myDir: File
@@ -618,6 +640,7 @@ class InspectionViewModel @Inject constructor(
                 if (i == images.size - 1)
                     state = state.copy(isLoading = false, acceptedLead = null, error = null)
             }
+            state = state.copy(isLoading = false, acceptedLead = null, error = null)
             /* int count=dbHandler.getLeadDetails();
             binding.tvSelectedImages.setText("Images Saved: "+count);*/
         } catch (e: Exception) {
