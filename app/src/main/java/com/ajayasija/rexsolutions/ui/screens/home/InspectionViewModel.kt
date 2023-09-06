@@ -1,8 +1,11 @@
 package com.ajayasija.rexsolutions.ui.screens.home
 
+import android.Manifest
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
 import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION
@@ -12,6 +15,7 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,13 +27,16 @@ import com.ajayasija.rexsolutions.domain.model.ImageData
 import com.ajayasija.rexsolutions.domain.model.InspectionHistoryModel
 import com.ajayasija.rexsolutions.domain.model.InspectionLeadModel
 import com.ajayasija.rexsolutions.domain.repository.AppRepo
-import com.ajayasija.rexsolutions.ui.components.getCurrentLocation
+import com.ajayasija.rexsolutions.ui.components.currentLocation
+import com.ajayasija.rexsolutions.ui.components.gpsEnabled
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
 import com.amazonaws.services.s3.AmazonS3Client
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
@@ -66,6 +73,10 @@ class InspectionViewModel @Inject constructor(
                 logOut()
             }
 
+            is HomeEvents.GetLocation -> {
+                currentLocation(events.context)
+            }
+
             is HomeEvents.UploadVideo -> {
                 //state = state.copy(error = uploadVideo(events.path))
                 uploadVideos(events.file)
@@ -80,8 +91,13 @@ class InspectionViewModel @Inject constructor(
             }
 
             is HomeEvents.SaveToLocal -> {
-                setAllocation(lead = state.acceptedLead!!, "Y", context = events.context)
-                saveToLocal(events.images, context = events.context, video = events.video)
+                setAllocation(
+                    lead = state.acceptedLead!!,
+                    "Y",
+                    context = events.context,
+                    location = events.location
+                )
+                saveToLocal(events.images, context = events.context)
             }
 
             is HomeEvents.ChangeAccept -> {
@@ -415,9 +431,9 @@ class InspectionViewModel @Inject constructor(
     private fun setAllocation(
         lead: InspectionLeadModel.DATASTATUS.Preinspection,
         status: String,
-        context: Context
+        context: Context,
+        location: Location? = null
     ) {
-        val location = getCurrentLocation(context)
         val map = hashMapOf(
             "fldiLeadId" to lead.fldiLeadId,
             "fldiTrnsId" to lead.fldiTrnsId,
@@ -461,6 +477,40 @@ class InspectionViewModel @Inject constructor(
         }
     }
 
+    // ------------------------------ Get Location --------------------------------
+
+    private fun currentLocation(
+        context: Context
+    ) {
+        state = state.copy(isLoading = true)
+        val fusedLocationClient: FusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(context)
+
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            if (gpsEnabled(context)) {
+                fusedLocationClient.lastLocation.addOnCompleteListener { task ->
+                    Log.e("location", "success to get location ${task.result}")
+                    state = state.copy(isLoading = false, location = task.result)
+                }
+                    .addOnSuccessListener {
+                        Log.e("location", "success to get location $it")
+                        state = state.copy(isLoading = false, location = it)
+
+                    }
+                    .addOnFailureListener {
+                        Log.e("location", "Failed to get location $it")
+                        state = state.copy(isLoading = false, location = null)
+                    }
+            }
+        }
+    }
 
     // ------------------------------ Get History --------------------------------
     private fun inspectionHistory(startDate: String, endDate: String, context: Context) {
@@ -581,7 +631,6 @@ class InspectionViewModel @Inject constructor(
     //---------------------- Save to local --------------------
     private fun saveToLocal(
         images: List<Uri>,
-        video: Uri? = null,
         context: Context
     ) {
         try {
@@ -608,7 +657,7 @@ class InspectionViewModel @Inject constructor(
                 val timeStampFormat = SimpleDateFormat("ddMMyyyy", Locale.ENGLISH)
                 val myDate = Date()
                 val strDate = timeStampFormat.format(myDate)
-                val imageName: String = veh.fldiVhId + "_" + strDate + "_" + i + ".jpg"
+                val imageName: String = veh.fldiVhId.uppercase() + "_" + strDate + "_" + i + ".jpg"
                 val destFile = File(myDir, imageName)
                 val uri: Uri = images[i]
                 val srcFile: File = File(getPath(uri, context.contentResolver))

@@ -1,6 +1,7 @@
 package com.ajayasija.rexsolutions.ui.screens.auth
 
 import android.content.Context
+import com.ajayasija.rexsolutions.ui.screens.home.HomeEvents
 
 sealed class AuthEvents {
     data class Login(val username: String, val password: String) : AuthEvents()
@@ -9,6 +10,9 @@ sealed class AuthEvents {
         val newPassword: String,
         val confirmPassword: String
     ) : AuthEvents()
+    data class GetLocation(
+        val context: Context
+    ): AuthEvents()
 
     data class Register(
         val context: Context,

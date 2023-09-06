@@ -1,11 +1,14 @@
 package com.ajayasija.rexsolutions.ui.screens.auth
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.util.Log
 import android.util.Patterns
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ajayasija.rexsolutions.data.DBHandler
@@ -14,12 +17,15 @@ import com.ajayasija.rexsolutions.data.UserPref
 import com.ajayasija.rexsolutions.domain.model.ImageData
 import com.ajayasija.rexsolutions.domain.model.RegisterFormData
 import com.ajayasija.rexsolutions.domain.repository.AppRepo
+import com.ajayasija.rexsolutions.ui.components.gpsEnabled
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
 import com.amazonaws.services.s3.AmazonS3Client
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.io.File
@@ -39,6 +45,10 @@ class AuthViewModel @Inject constructor(
                 login(events.username, events.password)
             }
 
+            is AuthEvents.GetLocation -> {
+                currentLocation(events.context)
+            }
+
             is AuthEvents.ChangePassword -> {
                 changePassword(
                     userPref.getUser()?.DATA_STATUS!!.member_id,
@@ -56,6 +66,40 @@ class AuthViewModel @Inject constructor(
                         events.panImg, events.aadharNO, events.aadharImg
                     )
                 )
+            }
+        }
+    }
+
+
+    private fun currentLocation(
+        context: Context
+    ) {
+        state = state.copy(isLoading = true)
+        val fusedLocationClient: FusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(context)
+
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            if (gpsEnabled(context)) {
+                fusedLocationClient.lastLocation.addOnCompleteListener { task ->
+                    Log.e("location", "success to get location ${task.result}")
+                    state = state.copy(isLoading = false, location = task.result)
+                }
+                    .addOnSuccessListener {
+                        Log.e("location", "success to get location $it")
+                        state = state.copy(isLoading = false, location = it)
+
+                    }
+                    .addOnFailureListener {
+                        Log.e("location", "Failed to get location $it")
+                        state = state.copy(isLoading = false, location = null)
+                    }
             }
         }
     }

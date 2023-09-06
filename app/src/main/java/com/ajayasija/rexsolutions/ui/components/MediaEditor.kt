@@ -10,6 +10,7 @@ import android.graphics.Color
 import android.graphics.ImageDecoder
 import android.graphics.Matrix
 import android.graphics.Paint
+import android.location.Location
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -66,17 +67,16 @@ fun bitmapToUri(bitmap: Bitmap, context: Context): Uri? {
 }
 
 @RequiresApi(Build.VERSION_CODES.Q)
-fun addWatermarkToImage(uri: Uri, context: Context): Uri? {
+fun addWatermarkToImage(uri: Uri, context: Context, location: Location): Uri? {
     val originalBitmap = uriToBitmap(uri, context)
 
-    val desiredWidth = 900
-    val desiredHeight = 1000
-    val matrix = Matrix()
-    matrix.postRotate(0F)
+    val desiredWidth = 1000
+    val desiredHeight = 1200
     val resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, desiredWidth, desiredHeight, true)
     val bitmap = resizedBitmap.copy(Bitmap.Config.ARGB_8888, true)
 
     val canvas = Canvas(bitmap)
+    // canvas.drawBitmap(originalBitmap, 0f, 0f, null)
     val paint = Paint()
 
     paint.color = Color.WHITE
@@ -84,17 +84,15 @@ fun addWatermarkToImage(uri: Uri, context: Context): Uri? {
     paint.isAntiAlias = true
     paint.textAlign = Paint.Align.RIGHT
 
-    //get current time and location
-    val location = getCurrentLocation(context)
     val latlng = "Lat: ${
         String.format(
             "%.7f",
-            location?.latitude
+            location.latitude
         )
     }, Lng: ${
         String.format(
             "%.7f",
-            location?.longitude
+            location.longitude
         )
     }"
     val dateTime = getCurrentDateTime()

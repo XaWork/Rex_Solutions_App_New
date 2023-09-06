@@ -1,6 +1,7 @@
 package com.ajayasija.rexsolutions.ui.screens.home
 
 import android.content.Context
+import android.location.Location
 import android.net.Uri
 import com.ajayasija.rexsolutions.domain.model.InspectionLeadModel
 import java.io.File
@@ -8,7 +9,6 @@ import java.io.File
 sealed class HomeEvents {
     object LogOut : HomeEvents()
     object ChangeAccept : HomeEvents()
-
     data class SetAllocation(
         val lead: InspectionLeadModel.DATASTATUS.Preinspection,
         val status: String,
@@ -16,6 +16,9 @@ sealed class HomeEvents {
     ):HomeEvents()
     data class AcceptLead(
         val lead: InspectionLeadModel.DATASTATUS.Preinspection,
+    ):HomeEvents()
+    data class GetLocation(
+       val context: Context
     ):HomeEvents()
 
     data class UploadVideo(
@@ -28,8 +31,8 @@ sealed class HomeEvents {
         val context: Context
     ):HomeEvents()
     data class SaveToLocal(
+        var location: Location,
         var images: List<Uri> = emptyList(),
-        var video: Uri? = null,
         var context: Context
     ):HomeEvents()
     data class GetInspectionHistory(

@@ -1,5 +1,6 @@
 package com.ajayasija.rexsolutions.ui.screens.home
 
+import android.location.Location
 import com.ajayasija.rexsolutions.domain.model.AllocationImageAwsModel
 import com.ajayasija.rexsolutions.domain.model.AllocationStatusModel
 import com.ajayasija.rexsolutions.domain.model.ImageData
@@ -11,6 +12,7 @@ data class HomeState(
     val isLoading: Boolean = false,
     val accept: Boolean = false,
     val error: String? = null,
+    val location: Location? = null,
     val lead: InspectionLeadModel? = null,
     val allocationStatus: AllocationStatusModel? = null,
     val allocationImageAws: AllocationImageAwsModel? = null,

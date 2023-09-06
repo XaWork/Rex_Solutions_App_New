@@ -1,6 +1,7 @@
 package com.ajayasija.rexsolutions.ui.components
 
 import android.Manifest
+import android.location.Location
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -21,6 +22,7 @@ import java.io.File
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun MediaPicker(
+    location: Location,
     launch: Boolean = false,
     pickMultiple: Boolean = false,
     video: Boolean = false,
@@ -49,7 +51,7 @@ fun MediaPicker(
         onResult = { uri ->
             if (uri != null) {
                 showLoading = true
-                onImageSelect(addWatermarkToImage(uri, context))
+                onImageSelect(addWatermarkToImage(uri, context, location))
                 showLoading = false
             }
         }
@@ -61,7 +63,7 @@ fun MediaPicker(
             if (bitmap != null) {
                 showLoading = true
                 val uri = bitmapToUri(bitmap, context)
-                val watermarkImage = uri?.let { it1 -> addWatermarkToImage(it1, context) }
+                val watermarkImage = uri?.let { it1 -> addWatermarkToImage(it1, context, location) }
                 /*if (pickMultiple) {
                     onMultipleImageSelect(listOf(watermarkImage!!))
                 } else {*/
@@ -109,7 +111,7 @@ fun MediaPicker(
             if (uriList.isNotEmpty()) {
                 val watermarkUriList = mutableListOf<Uri>()
                 for (i in 0 until (uriList.size)) {
-                    addWatermarkToImage(uriList[i], context)?.let { watermarkUriList.add(it) }
+                    addWatermarkToImage(uriList[i], context, location)?.let { watermarkUriList.add(it) }
                     if (i == uriList.size - 1) {
                         showLoading = false
                         onMultipleImageSelect(watermarkUriList)

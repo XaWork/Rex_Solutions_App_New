@@ -1,5 +1,6 @@
 package com.ajayasija.rexsolutions.ui.screens.inspection_lead
 
+import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -21,6 +22,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +49,7 @@ import com.ajayasija.rexsolutions.ui.components.ShowLoading
 import com.ajayasija.rexsolutions.ui.components.ShowToast
 import com.ajayasija.rexsolutions.ui.components.VerticalSpace
 import com.ajayasija.rexsolutions.ui.screens.home.HomeEvents
+import com.ajayasija.rexsolutions.ui.screens.home.HomeState
 import com.ajayasija.rexsolutions.ui.screens.home.InspectionViewModel
 import java.io.File
 
@@ -133,14 +136,18 @@ fun UploadVehicleDataScreen(
     var videoText by remember { mutableStateOf("") }
 
     val state = viewModel.state
-
     val context = LocalContext.current
+
+    //get location
+    LaunchedEffect(key1 = true) {
+        viewModel.onEvent(HomeEvents.GetLocation(context))
+    }
 
 
     // -----------------------  Condition UI ---------------------
     if (state.isLoading)
         ShowLoading()
-    else if (state.acceptedLead == null && state.allocationStatus !=null)
+    else if (state.acceptedLead == null && state.allocationStatus != null)
         onNavigateToHomeScreen()
     else if (state.error != null)
         ShowToast(message = state.error, context = context)
@@ -183,66 +190,61 @@ fun UploadVehicleDataScreen(
     var showMediaChooserDialog by remember { mutableStateOf(false) }
     var video by remember { mutableStateOf(false) }
     var getMedia by remember { mutableStateOf("") }
-    MediaPicker(
-        showPhotoPicker,
-        pickMultiple,
-        video,
-        showDialog = showPhotoPicker,
-        //changeDialogValue = { showMediaChooserDialog = it },
-        onImageSelect = {
-            when (getMedia) {
-                GetMedia.REGISTRATIONBOOK.name -> registrationBookPhoto = it
-                GetMedia.ODOMETER.name -> odometerPhoto = it
-                GetMedia.CHASSIS.name -> chassisNumberPhoto = it
-                GetMedia.ENGINENUMBER.name -> engineNumberPhoto = it
-                GetMedia.FRONTWSGLASS.name -> frontWsGlassPhoto = it
-                GetMedia.FULLFRONT.name -> fullFrontPhoto = it
-                GetMedia.FRONTUNDERCARRIAGE.name -> frontUnderCarriagePhoto = it
-                GetMedia.BONNETOPENFORENGINE.name -> bonnetOpenForEnginePhoto = it
-                GetMedia.ROOFFROMOUTSIDE.name -> roofFromOutsidePhoto = it
-                GetMedia.FRONTVLEFT.name -> frontVLeftPhoto = it
-                GetMedia.FULLLEFT.name -> fullLeftPhoto = it
-                GetMedia.BACKVLEFT.name -> backVLeftPhoto = it
-                GetMedia.BACKFULL.name -> backFullPhoto = it
-                GetMedia.BACKUNDERCARRIAGE.name -> backUnderCarriagePhoto = it
-                GetMedia.BACKDICKEYOPEN.name -> backDickeyOpenPhoto = it
-                GetMedia.BACKVRIGHT.name -> backVRightPhoto = it
-                GetMedia.FULLRIGHT.name -> fullRightPhoto = it
-                GetMedia.FRONTVRIGHT.name -> frontVRightPhoto = it
-                GetMedia.SELIEWITHCAR.name -> selfieWithCarPhoto = it
-                GetMedia.TYRE1.name -> tyre1Photo = it
-                GetMedia.TYRE2.name -> tyre2Photo = it
-                GetMedia.TYRE3.name -> tyre3Photo = it
-                GetMedia.TYRE4.name -> tyre4Photo = it
-                GetMedia.DASHBOARDINSIDE.name -> dashboardInsidePhoto = it
-                GetMedia.FRONTSEAT.name -> frontSeatPhoto = it
-                GetMedia.BACKSEAT.name -> backSeatPhoto = it
-                GetMedia.ROOFFROMINSIDE.name -> roofFromInsidePhoto = it
-                GetMedia.EXTRA1.name -> extra1Photo = it
-                GetMedia.EXTRA2.name -> extra2Photo = it
-                GetMedia.EXTRA3.name -> extra3Photo = it
-            }
-            showPhotoPicker = false
-        },
-        onDismissMediaPicker = {
-            showPhotoPicker = false
-        },
-        onVideoSelect = {
-            vehVideo = it
-            showPhotoPicker = false
-        }) {
-        showPhotoPicker = false
-        /*balancedImages.addAll(
-            if (it.size + balancedImages.size <= 30) it
-            else it.take(30 - balancedImages.size)
-        )
-            */
 
-        /*else{
-            showToast = true
+    if(showPhotoPicker){
+        MediaPicker(
+            state.location!!,
+            showPhotoPicker,
+            pickMultiple,
+            video,
+            showDialog = showPhotoPicker,
+            //changeDialogValue = { showMediaChooserDialog = it },
+            onImageSelect = {
+                when (getMedia) {
+                    GetMedia.REGISTRATIONBOOK.name -> registrationBookPhoto = it
+                    GetMedia.ODOMETER.name -> odometerPhoto = it
+                    GetMedia.CHASSIS.name -> chassisNumberPhoto = it
+                    GetMedia.ENGINENUMBER.name -> engineNumberPhoto = it
+                    GetMedia.FRONTWSGLASS.name -> frontWsGlassPhoto = it
+                    GetMedia.FULLFRONT.name -> fullFrontPhoto = it
+                    GetMedia.FRONTUNDERCARRIAGE.name -> frontUnderCarriagePhoto = it
+                    GetMedia.BONNETOPENFORENGINE.name -> bonnetOpenForEnginePhoto = it
+                    GetMedia.ROOFFROMOUTSIDE.name -> roofFromOutsidePhoto = it
+                    GetMedia.FRONTVLEFT.name -> frontVLeftPhoto = it
+                    GetMedia.FULLLEFT.name -> fullLeftPhoto = it
+                    GetMedia.BACKVLEFT.name -> backVLeftPhoto = it
+                    GetMedia.BACKFULL.name -> backFullPhoto = it
+                    GetMedia.BACKUNDERCARRIAGE.name -> backUnderCarriagePhoto = it
+                    GetMedia.BACKDICKEYOPEN.name -> backDickeyOpenPhoto = it
+                    GetMedia.BACKVRIGHT.name -> backVRightPhoto = it
+                    GetMedia.FULLRIGHT.name -> fullRightPhoto = it
+                    GetMedia.FRONTVRIGHT.name -> frontVRightPhoto = it
+                    GetMedia.SELIEWITHCAR.name -> selfieWithCarPhoto = it
+                    GetMedia.TYRE1.name -> tyre1Photo = it
+                    GetMedia.TYRE2.name -> tyre2Photo = it
+                    GetMedia.TYRE3.name -> tyre3Photo = it
+                    GetMedia.TYRE4.name -> tyre4Photo = it
+                    GetMedia.DASHBOARDINSIDE.name -> dashboardInsidePhoto = it
+                    GetMedia.FRONTSEAT.name -> frontSeatPhoto = it
+                    GetMedia.BACKSEAT.name -> backSeatPhoto = it
+                    GetMedia.ROOFFROMINSIDE.name -> roofFromInsidePhoto = it
+                    GetMedia.EXTRA1.name -> extra1Photo = it
+                    GetMedia.EXTRA2.name -> extra2Photo = it
+                    GetMedia.EXTRA3.name -> extra3Photo = it
+                }
+                showPhotoPicker = false
+            },
+            onDismissMediaPicker = {
+                showPhotoPicker = false
+            },
+            onVideoSelect = {
+                vehVideo = it
+                showPhotoPicker = false
+            }) {
             showPhotoPicker = false
-        }*/
+        }
     }
+
 
 
     // -----------------------  UI ---------------------
@@ -275,10 +277,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.REGISTRATIONBOOK.name
+                                if (checkLocation(context, state)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.REGISTRATIONBOOK.name
+                                }
                             }
                     )
                 else
@@ -303,10 +307,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.ODOMETER.name
+                                if (checkLocation(context, state)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.ODOMETER.name
+                                }
                             }
                     )
                 else
@@ -333,10 +339,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.CHASSIS.name
+                                if (checkLocation(context, state)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.CHASSIS.name
+                                }
                             }
                     )
                 else
@@ -361,10 +369,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.ENGINENUMBER.name
+                                if (checkLocation(context, state)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.ENGINENUMBER.name
+                                }
                             }
                     )
                 else
@@ -391,10 +401,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.FRONTWSGLASS.name
+                                if (checkLocation(context, state)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.FRONTWSGLASS.name
+                                }
                             }
                     )
                 else
@@ -419,10 +431,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.FULLFRONT.name
+                                if (checkLocation(context, state)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.FULLFRONT.name
+                                }
                             }
                     )
                 else
@@ -449,10 +463,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.FRONTUNDERCARRIAGE.name
+                                if (checkLocation(context, state)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.FRONTUNDERCARRIAGE.name
+                                }
                             }
                     )
                 else
@@ -477,10 +493,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.BONNETOPENFORENGINE.name
+                                if (checkLocation(context, state)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.BONNETOPENFORENGINE.name
+                                }
                             }
                     )
                 else
@@ -507,10 +525,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.ROOFFROMOUTSIDE.name
+                                if (checkLocation(context, state)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.ROOFFROMOUTSIDE.name
+                                }
                             }
                     )
                 else
@@ -535,10 +555,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.FRONTVLEFT.name
+                                if (checkLocation(context, state)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.FRONTVLEFT.name
+                                }
                             }
                     )
                 else
@@ -565,10 +587,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.FULLLEFT.name
+                                if (checkLocation(context, state)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.FULLLEFT.name
+                                }
                             }
                     )
                 else
@@ -593,10 +617,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.BACKVLEFT.name
+                                if (checkLocation(context, state)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.BACKVLEFT.name
+                                }
                             }
                     )
                 else
@@ -623,10 +649,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.BACKFULL.name
+                                if (checkLocation(context, state)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.BACKFULL.name
+                                }
                             }
                     )
                 else
@@ -651,10 +679,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.BACKUNDERCARRIAGE.name
+                                if (checkLocation(context, state)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.BACKUNDERCARRIAGE.name
+                                }
                             }
                     )
                 else
@@ -1244,7 +1274,11 @@ fun UploadVehicleDataScreen(
                     showToast = true
                     toastMessage = "Please select image"
                 } else {
-                    Toast.makeText(context, "Wait a minute, Don't press any button.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        context,
+                        "Wait a minute, Don't press any button.",
+                        Toast.LENGTH_LONG
+                    ).show()
                     chassisNumberPhoto?.let { it1 -> images.add(it1) }
                     odometerPhoto?.let { it1 -> images.add(it1) }
                     registrationBookPhoto?.let { it1 -> images.add(it1) }
@@ -1279,6 +1313,7 @@ fun UploadVehicleDataScreen(
                     showToast = false
                     viewModel.onEvent(
                         HomeEvents.SaveToLocal(
+                            location =state.location!!,
                             images,
                             context = context,
                             // video = if (vehVideo != null) vehVideo else null
@@ -1321,6 +1356,19 @@ fun BalancedImageDialog(
                 }
             }
         }
+    }
+}
+
+fun checkLocation(context: Context, state: HomeState): Boolean {
+    return if (state.location != null)
+        true
+    else {
+        Toast.makeText(
+            context,
+            "Please check location permission is granted and GPS is enabled.",
+            Toast.LENGTH_LONG
+        ).show()
+        false
     }
 }
 
