@@ -67,7 +67,11 @@ fun bitmapToUri(bitmap: Bitmap, context: Context): Uri? {
 }
 
 @RequiresApi(Build.VERSION_CODES.Q)
-fun addWatermarkToImage(uri: Uri, context: Context, location: Location): Uri? {
+fun addWatermarkToImage(
+    uri: Uri,
+    context: Context,
+    location: Location,
+): Uri? {
     val originalBitmap = uriToBitmap(uri, context)
 
     val desiredWidth = 1000

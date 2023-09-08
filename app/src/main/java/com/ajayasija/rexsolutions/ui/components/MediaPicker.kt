@@ -57,20 +57,21 @@ fun MediaPicker(
         }
     )
 
+    val mediaImg = File.createTempFile("temp_file", ".jpg", context.applicationContext.cacheDir)
+    val imageFileUri = FileProvider.getUriForFile(
+        context,
+        "${context.packageName}.provider",
+        mediaImg
+    )
     val cameraPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicturePreview(),
-        onResult = { bitmap ->
-            if (bitmap != null) {
-                showLoading = true
-                val uri = bitmapToUri(bitmap, context)
-                val watermarkImage = uri?.let { it1 -> addWatermarkToImage(it1, context, location) }
-                /*if (pickMultiple) {
-                    onMultipleImageSelect(listOf(watermarkImage!!))
-                } else {*/
-                showLoading = false
-                onImageSelect(watermarkImage)
-
-                // }
+        contract = ActivityResultContracts.TakePicture(),
+        onResult = { success ->
+            if (success) {
+                imageFileUri?.let {
+                    val watermarkImage = addWatermarkToImage(it,context = context, location = location)
+                    onImageSelect(watermarkImage)
+                }
+                Log.e("video", "Success to record video")
             }
         }
     )
@@ -111,7 +112,11 @@ fun MediaPicker(
             if (uriList.isNotEmpty()) {
                 val watermarkUriList = mutableListOf<Uri>()
                 for (i in 0 until (uriList.size)) {
-                    addWatermarkToImage(uriList[i], context, location)?.let { watermarkUriList.add(it) }
+                    addWatermarkToImage(uriList[i], context, location)?.let {
+                        watermarkUriList.add(
+                            it
+                        )
+                    }
                     if (i == uriList.size - 1) {
                         showLoading = false
                         onMultipleImageSelect(watermarkUriList)
@@ -149,7 +154,7 @@ fun MediaPicker(
                                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                             )
                         } else
-                            cameraPickerLauncher.launch()
+                            cameraPickerLauncher.launch(imageFileUri)
                     } else {
                         if (camera) {
                             videoCaptureLauncher.launch(fileUri)

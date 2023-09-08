@@ -191,7 +191,7 @@ fun UploadVehicleDataScreen(
     var video by remember { mutableStateOf(false) }
     var getMedia by remember { mutableStateOf("") }
 
-    if(showPhotoPicker){
+    if (showPhotoPicker) {
         MediaPicker(
             state.location!!,
             showPhotoPicker,
@@ -246,7 +246,6 @@ fun UploadVehicleDataScreen(
     }
 
 
-
     // -----------------------  UI ---------------------
 
     Scaffold(content = {
@@ -277,7 +276,7 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                if (checkLocation(context, state)) {
+                                if (checkLocation(context, viewModel)) {
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -307,7 +306,7 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                if (checkLocation(context, state)) {
+                                if (checkLocation(context, viewModel)) {
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -339,7 +338,7 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                if (checkLocation(context, state)) {
+                                if (checkLocation(context, viewModel)) {
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -369,7 +368,7 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                if (checkLocation(context, state)) {
+                                if (checkLocation(context, viewModel)) {
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -401,7 +400,7 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                if (checkLocation(context, state)) {
+                                if (checkLocation(context, viewModel)) {
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -431,7 +430,7 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                if (checkLocation(context, state)) {
+                                if (checkLocation(context, viewModel)) {
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -463,7 +462,7 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                if (checkLocation(context, state)) {
+                                if (checkLocation(context, viewModel)) {
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -493,7 +492,7 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                if (checkLocation(context, state)) {
+                                if (checkLocation(context, viewModel)) {
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -525,7 +524,7 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                if (checkLocation(context, state)) {
+                                if (checkLocation(context, viewModel)) {
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -555,7 +554,7 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                if (checkLocation(context, state)) {
+                                if (checkLocation(context, viewModel)) {
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -587,7 +586,7 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                if (checkLocation(context, state)) {
+                                if (checkLocation(context, viewModel)) {
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -617,7 +616,7 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                if (checkLocation(context, state)) {
+                                if (checkLocation(context, viewModel)) {
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -649,7 +648,7 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                if (checkLocation(context, state)) {
+                                if (checkLocation(context, viewModel)) {
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -679,7 +678,7 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                if (checkLocation(context, state)) {
+                                if (checkLocation(context, viewModel)) {
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -711,10 +710,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.BACKDICKEYOPEN.name
+                                if (checkLocation(context, viewModel)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.BACKDICKEYOPEN.name
+                                }
                             }
                     )
                 else
@@ -739,10 +740,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.BACKVRIGHT.name
+                                if (checkLocation(context, viewModel)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.BACKVRIGHT.name
+                                }
                             }
                     )
                 else
@@ -769,10 +772,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.FULLRIGHT.name
+                                if (checkLocation(context, viewModel)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.FULLRIGHT.name
+                                }
                             }
                     )
                 else
@@ -797,10 +802,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.FRONTVRIGHT.name
+                                if (checkLocation(context, viewModel)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.FRONTVRIGHT.name
+                                }
                             }
                     )
                 else
@@ -827,10 +834,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.SELIEWITHCAR.name
+                                if (checkLocation(context, viewModel)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.SELIEWITHCAR.name
+                                }
                             }
                     )
                 else
@@ -855,10 +864,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.TYRE1.name
+                                if (checkLocation(context, viewModel)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.TYRE1.name
+                                }
                             }
                     )
                 else
@@ -885,10 +896,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.TYRE2.name
+                                if (checkLocation(context, viewModel)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.TYRE2.name
+                                }
                             }
                     )
                 else
@@ -913,10 +926,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.TYRE3.name
+                                if (checkLocation(context, viewModel)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.TYRE3.name
+                                }
                             }
                     )
                 else
@@ -943,10 +958,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.TYRE4.name
+                                if (checkLocation(context, viewModel)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.TYRE4.name
+                                }
                             }
                     )
                 else
@@ -971,10 +988,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.DASHBOARDINSIDE.name
+                                if (checkLocation(context, viewModel)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.DASHBOARDINSIDE.name
+                                }
                             }
                     )
                 else
@@ -1001,10 +1020,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.FRONTSEAT.name
+                                if (checkLocation(context, viewModel)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.FRONTSEAT.name
+                                }
                             }
                     )
                 else
@@ -1029,10 +1050,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.BACKSEAT.name
+                                if (checkLocation(context, viewModel)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.BACKSEAT.name
+                                }
                             }
                     )
                 else
@@ -1059,10 +1082,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.ROOFFROMINSIDE.name
+                                if (checkLocation(context, viewModel)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.ROOFFROMINSIDE.name
+                                }
                             }
                     )
                 else
@@ -1087,10 +1112,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.EXTRA1.name
+                                if (checkLocation(context, viewModel)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.EXTRA1.name
+                                }
                             }
                     )
                 else
@@ -1117,10 +1144,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.EXTRA2.name
+                                if (checkLocation(context, viewModel)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.EXTRA2.name
+                                }
                             }
                     )
                 else
@@ -1145,10 +1174,12 @@ fun UploadVehicleDataScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                showPhotoPicker = true
-                                pickMultiple = false
-                                video = false
-                                getMedia = GetMedia.EXTRA3.name
+                                if (checkLocation(context, viewModel)) {
+                                    showPhotoPicker = true
+                                    pickMultiple = false
+                                    video = false
+                                    getMedia = GetMedia.EXTRA3.name
+                                }
                             }
                     )
                 else
@@ -1313,7 +1344,7 @@ fun UploadVehicleDataScreen(
                     showToast = false
                     viewModel.onEvent(
                         HomeEvents.SaveToLocal(
-                            location =state.location!!,
+                            location = state.location!!,
                             images,
                             context = context,
                             // video = if (vehVideo != null) vehVideo else null
@@ -1359,10 +1390,12 @@ fun BalancedImageDialog(
     }
 }
 
-fun checkLocation(context: Context, state: HomeState): Boolean {
+fun checkLocation(context: Context, viewModel: InspectionViewModel): Boolean {
+    val state = viewModel.state
     return if (state.location != null)
         true
     else {
+        viewModel.onEvent(HomeEvents.GetLocation(context))
         Toast.makeText(
             context,
             "Please check location permission is granted and GPS is enabled.",

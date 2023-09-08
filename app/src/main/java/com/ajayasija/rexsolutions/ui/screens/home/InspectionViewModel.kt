@@ -1,6 +1,7 @@
 package com.ajayasija.rexsolutions.ui.screens.home
 
 import android.Manifest
+import android.app.Activity
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -27,7 +28,6 @@ import com.ajayasija.rexsolutions.domain.model.ImageData
 import com.ajayasija.rexsolutions.domain.model.InspectionHistoryModel
 import com.ajayasija.rexsolutions.domain.model.InspectionLeadModel
 import com.ajayasija.rexsolutions.domain.repository.AppRepo
-import com.ajayasija.rexsolutions.ui.components.currentLocation
 import com.ajayasija.rexsolutions.ui.components.gpsEnabled
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
@@ -36,7 +36,11 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
 import com.amazonaws.services.s3.AmazonS3Client
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.CancellationToken
+import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.android.gms.tasks.OnTokenCanceledListener
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
@@ -482,6 +486,7 @@ class InspectionViewModel @Inject constructor(
     private fun currentLocation(
         context: Context
     ) {
+        Log.e("TAG", "currentLocation method called")
         state = state.copy(isLoading = true)
         val fusedLocationClient: FusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(context)
@@ -495,22 +500,45 @@ class InspectionViewModel @Inject constructor(
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             if (gpsEnabled(context)) {
-                fusedLocationClient.lastLocation.addOnCompleteListener { task ->
-                    Log.e("location", "success to get location ${task.result}")
-                    state = state.copy(isLoading = false, location = task.result)
-                }
+                fusedLocationClient.getCurrentLocation(
+                    LocationRequest.PRIORITY_HIGH_ACCURACY,
+                    object : CancellationToken() {
+                        override fun onCanceledRequested(p0: OnTokenCanceledListener) =
+                            CancellationTokenSource().token
+
+                        override fun isCancellationRequested() = false
+                    })
                     .addOnSuccessListener {
                         Log.e("location", "success to get location $it")
-                        state = state.copy(isLoading = false, location = it)
-
+                        if (it != null) {
+                            state = state.copy(isLoading = false, location = it)
+                        }else{
+                            state = state.copy(
+                                isLoading = false,
+                                error = "Failed to get location"
+                            )
+                        }
                     }
                     .addOnFailureListener {
                         Log.e("location", "Failed to get location $it")
                         state = state.copy(isLoading = false, location = null)
                     }
+            } else {
+                state = state.copy(isLoading = false, location = null)
             }
+        } else {
+            state = state.copy(isLoading = false, location = null)
+            ActivityCompat.requestPermissions(
+                context as Activity,  // Make sure context is an Activity
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ),
+                0  // You need to define a unique request code
+            )
         }
     }
+
 
     // ------------------------------ Get History --------------------------------
     private fun inspectionHistory(startDate: String, endDate: String, context: Context) {
