@@ -28,7 +28,8 @@ sealed class HomeEvents {
         val context: Context
     ):HomeEvents()
     data class UploadVehMedia(
-        val context: Context
+        val context: Context,
+        val uri: Uri
     ):HomeEvents()
     data class SaveToLocal(
         var location: Location,

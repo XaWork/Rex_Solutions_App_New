@@ -27,6 +27,7 @@ fun MediaPicker(
     pickMultiple: Boolean = false,
     video: Boolean = false,
     showDialog: Boolean = false,
+    imageName: String? = null,
     onDismissMediaPicker: () -> Unit,
     onImageSelect: (Uri?) -> Unit,
     onVideoSelect: (String?) -> Unit,
@@ -51,7 +52,7 @@ fun MediaPicker(
         onResult = { uri ->
             if (uri != null) {
                 showLoading = true
-                onImageSelect(addWatermarkToImage(uri, context, location))
+                onImageSelect(addWatermarkToImage(uri, context, location, imageName))
                 showLoading = false
             }
         }
@@ -68,7 +69,7 @@ fun MediaPicker(
         onResult = { success ->
             if (success) {
                 imageFileUri?.let {
-                    val watermarkImage = addWatermarkToImage(it,context = context, location = location)
+                    val watermarkImage = addWatermarkToImage(it,context = context, location = location, imageName = imageName)
                     onImageSelect(watermarkImage)
                 }
                 Log.e("video", "Success to record video")

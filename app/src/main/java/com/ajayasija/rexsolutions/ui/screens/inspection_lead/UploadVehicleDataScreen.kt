@@ -49,9 +49,11 @@ import com.ajayasija.rexsolutions.ui.components.ShowLoading
 import com.ajayasija.rexsolutions.ui.components.ShowToast
 import com.ajayasija.rexsolutions.ui.components.VerticalSpace
 import com.ajayasija.rexsolutions.ui.screens.home.HomeEvents
-import com.ajayasija.rexsolutions.ui.screens.home.HomeState
 import com.ajayasija.rexsolutions.ui.screens.home.InspectionViewModel
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 enum class GetMedia {
@@ -130,6 +132,9 @@ fun UploadVehicleDataScreen(
     var vehVideo by remember {
         mutableStateOf<String?>(null)
     }
+    var imageName by remember {
+        mutableStateOf<String>("")
+    }
     //val balancedImages by remember { mutableStateOf(mutableStateListOf<Uri>()) }
 
     var imgText by remember { mutableStateOf("") }
@@ -198,39 +203,130 @@ fun UploadVehicleDataScreen(
             pickMultiple,
             video,
             showDialog = showPhotoPicker,
+            imageName = imageName,
             //changeDialogValue = { showMediaChooserDialog = it },
             onImageSelect = {
                 when (getMedia) {
-                    GetMedia.REGISTRATIONBOOK.name -> registrationBookPhoto = it
-                    GetMedia.ODOMETER.name -> odometerPhoto = it
-                    GetMedia.CHASSIS.name -> chassisNumberPhoto = it
-                    GetMedia.ENGINENUMBER.name -> engineNumberPhoto = it
-                    GetMedia.FRONTWSGLASS.name -> frontWsGlassPhoto = it
-                    GetMedia.FULLFRONT.name -> fullFrontPhoto = it
-                    GetMedia.FRONTUNDERCARRIAGE.name -> frontUnderCarriagePhoto = it
-                    GetMedia.BONNETOPENFORENGINE.name -> bonnetOpenForEnginePhoto = it
-                    GetMedia.ROOFFROMOUTSIDE.name -> roofFromOutsidePhoto = it
-                    GetMedia.FRONTVLEFT.name -> frontVLeftPhoto = it
-                    GetMedia.FULLLEFT.name -> fullLeftPhoto = it
-                    GetMedia.BACKVLEFT.name -> backVLeftPhoto = it
-                    GetMedia.BACKFULL.name -> backFullPhoto = it
-                    GetMedia.BACKUNDERCARRIAGE.name -> backUnderCarriagePhoto = it
-                    GetMedia.BACKDICKEYOPEN.name -> backDickeyOpenPhoto = it
-                    GetMedia.BACKVRIGHT.name -> backVRightPhoto = it
-                    GetMedia.FULLRIGHT.name -> fullRightPhoto = it
-                    GetMedia.FRONTVRIGHT.name -> frontVRightPhoto = it
-                    GetMedia.SELIEWITHCAR.name -> selfieWithCarPhoto = it
-                    GetMedia.TYRE1.name -> tyre1Photo = it
-                    GetMedia.TYRE2.name -> tyre2Photo = it
-                    GetMedia.TYRE3.name -> tyre3Photo = it
-                    GetMedia.TYRE4.name -> tyre4Photo = it
-                    GetMedia.DASHBOARDINSIDE.name -> dashboardInsidePhoto = it
-                    GetMedia.FRONTSEAT.name -> frontSeatPhoto = it
-                    GetMedia.BACKSEAT.name -> backSeatPhoto = it
-                    GetMedia.ROOFFROMINSIDE.name -> roofFromInsidePhoto = it
-                    GetMedia.EXTRA1.name -> extra1Photo = it
-                    GetMedia.EXTRA2.name -> extra2Photo = it
-                    GetMedia.EXTRA3.name -> extra3Photo = it
+                    GetMedia.REGISTRATIONBOOK.name -> {
+                        registrationBookPhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.ODOMETER.name -> {
+                        odometerPhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.CHASSIS.name -> {
+                        chassisNumberPhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.ENGINENUMBER.name -> {
+                        engineNumberPhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.FRONTWSGLASS.name -> {
+                        frontWsGlassPhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.FULLFRONT.name -> {
+                        fullFrontPhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.FRONTUNDERCARRIAGE.name -> {
+                        frontUnderCarriagePhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.BONNETOPENFORENGINE.name -> {
+                        bonnetOpenForEnginePhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.ROOFFROMOUTSIDE.name -> {
+                        roofFromOutsidePhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.FRONTVLEFT.name -> {
+                        frontVLeftPhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.FULLLEFT.name -> {
+                        fullLeftPhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.BACKVLEFT.name -> {
+                        backVLeftPhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.BACKFULL.name -> {
+                    backFullPhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                }
+                    GetMedia.BACKUNDERCARRIAGE.name -> {
+                        backUnderCarriagePhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.BACKDICKEYOPEN.name -> {
+                        backDickeyOpenPhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.BACKVRIGHT.name -> {
+                        backVRightPhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.FULLRIGHT.name -> {
+                    fullRightPhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                }
+                    GetMedia.FRONTVRIGHT.name -> {
+                    frontVRightPhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                }
+                    GetMedia.SELIEWITHCAR.name -> {
+                        selfieWithCarPhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.TYRE1.name -> {
+                        tyre1Photo = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.TYRE2.name -> {
+                        tyre2Photo = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.TYRE3.name -> {
+                        tyre3Photo = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.TYRE4.name -> {
+                        tyre4Photo = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.DASHBOARDINSIDE.name -> {
+                        dashboardInsidePhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.FRONTSEAT.name -> {
+                        frontSeatPhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.BACKSEAT.name -> {
+                    backSeatPhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                }
+                    GetMedia.ROOFFROMINSIDE.name -> {
+                        roofFromInsidePhoto = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.EXTRA1.name -> {
+                        extra1Photo = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.EXTRA2.name -> {
+                        extra2Photo = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
+                    GetMedia.EXTRA3.name -> {
+                        extra3Photo = it
+                        viewModel.onEvent(HomeEvents.UploadVehMedia(context, it!!))
+                    }
                 }
                 showPhotoPicker = false
             },
@@ -277,6 +373,8 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "0")
+                                    Log.e("imagename", "Image name on screen: $imageName")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -307,6 +405,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "1")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -339,6 +438,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "2")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -369,6 +469,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "3")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -401,6 +502,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "4")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -431,6 +533,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "5")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -463,6 +566,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "6")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -493,6 +597,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "7")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -525,6 +630,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "8")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -555,6 +661,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "9")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -587,6 +694,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "10")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -617,6 +725,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "11")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -649,6 +758,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "12")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -679,6 +789,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "13")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -711,6 +822,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "14")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -741,6 +853,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "15")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -773,6 +886,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "16")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -803,6 +917,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "17")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -835,6 +950,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "18")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -865,6 +981,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "19")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -897,6 +1014,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "20")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -927,6 +1045,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "21")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -959,6 +1078,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "22")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -989,6 +1109,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "23")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -1021,6 +1142,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "24")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -1051,6 +1173,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "25")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -1083,6 +1206,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "26")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -1113,6 +1237,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "27")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -1145,6 +1270,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "28")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -1175,6 +1301,7 @@ fun UploadVehicleDataScreen(
                             .weight(1f)
                             .clickable {
                                 if (checkLocation(context, viewModel)) {
+                                    imageName = createImageName(state.acceptedLead!!.fldiVhId, "29")
                                     showPhotoPicker = true
                                     pickMultiple = false
                                     video = false
@@ -1310,7 +1437,7 @@ fun UploadVehicleDataScreen(
                         "Wait a minute, Don't press any button.",
                         Toast.LENGTH_LONG
                     ).show()
-                    chassisNumberPhoto?.let { it1 -> images.add(it1) }
+                    /*chassisNumberPhoto?.let { it1 -> images.add(it1) }
                     odometerPhoto?.let { it1 -> images.add(it1) }
                     registrationBookPhoto?.let { it1 -> images.add(it1) }
                     engineNumberPhoto?.let { it1 -> images.add(it1) }
@@ -1341,7 +1468,7 @@ fun UploadVehicleDataScreen(
                     extra2Photo?.let { it1 -> images.add(it1) }
                     extra3Photo?.let { it1 -> images.add(it1) }
 
-                    showToast = false
+                    showToast = false*/
                     viewModel.onEvent(
                         HomeEvents.SaveToLocal(
                             location = state.location!!,
@@ -1354,6 +1481,14 @@ fun UploadVehicleDataScreen(
             }
         }
     })
+}
+
+fun createImageName(vehId: String, number: String): String {
+    val timeStampFormat = SimpleDateFormat("ddMMyyyy", Locale.ENGLISH)
+    val myDate = Date()
+    val strDate = timeStampFormat.format(myDate)
+    val imageName: String = vehId.uppercase() + "_" + strDate + "_" + number
+    return imageName
 }
 
 

@@ -44,8 +44,14 @@ fun uriToBitmap(uri: Uri, context: Context): Bitmap {
 }
 
 @RequiresApi(Build.VERSION_CODES.Q)
-fun bitmapToUri(bitmap: Bitmap, context: Context): Uri? {
-    val displayName = "image_${System.currentTimeMillis()}.png"
+fun bitmapToUri(
+    bitmap: Bitmap, context: Context,
+    imageName: String? = null
+): Uri? {
+    Log.e("imagename", "Image name: $imageName")
+    val displayName = if (imageName != null) "$imageName.png"
+    else "image_${System.currentTimeMillis()}.png"
+
     val mimeType = "image/png"
     val contentResolver: ContentResolver = context.contentResolver
 
@@ -71,8 +77,10 @@ fun addWatermarkToImage(
     uri: Uri,
     context: Context,
     location: Location,
+    imageName: String? = null
 ): Uri? {
     val originalBitmap = uriToBitmap(uri, context)
+    var name = uri.path
 
     val desiredWidth = 1000
     val desiredHeight = 1200
@@ -112,7 +120,7 @@ fun addWatermarkToImage(
         canvas.drawText(lines[i], bitmap.width - padding.toFloat(), textY.toFloat(), paint)
     }
 
-    return bitmapToUri(bitmap, context)
+    return bitmapToUri(bitmap, context, imageName)
 }
 
 //-------------- video ----------------------------------

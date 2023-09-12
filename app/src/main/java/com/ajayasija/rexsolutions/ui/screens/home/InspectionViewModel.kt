@@ -27,6 +27,7 @@ import com.ajayasija.rexsolutions.domain.model.AllocationImageAwsModel
 import com.ajayasija.rexsolutions.domain.model.ImageData
 import com.ajayasija.rexsolutions.domain.model.InspectionHistoryModel
 import com.ajayasija.rexsolutions.domain.model.InspectionLeadModel
+import com.ajayasija.rexsolutions.domain.model.RegisterFormData
 import com.ajayasija.rexsolutions.domain.repository.AppRepo
 import com.ajayasija.rexsolutions.ui.components.gpsEnabled
 import com.amazonaws.auth.BasicAWSCredentials
@@ -87,7 +88,8 @@ class InspectionViewModel @Inject constructor(
             }
 
             is HomeEvents.UploadVehMedia -> {
-                uploadVehMedia(events.context)
+                //uploadVehMedia(events.context)
+                uploadImageToAws(events.context, events.uri)
             }
 
             is HomeEvents.GetInspectionHistory -> {
@@ -101,7 +103,7 @@ class InspectionViewModel @Inject constructor(
                     context = events.context,
                     location = events.location
                 )
-                saveToLocal(events.images, context = events.context)
+                //saveToLocal(events.images, context = events.context)
             }
 
             is HomeEvents.ChangeAccept -> {
@@ -124,7 +126,7 @@ class InspectionViewModel @Inject constructor(
         }
     }
 
-    private fun uploadVehMedia(context: Context, video: Boolean = false) {
+    private fun uploadVehMedia(context: Context) {
         val dbHandler = DBHandler(context)
 
         if (state.imageCount > 0) {
@@ -149,6 +151,61 @@ class InspectionViewModel @Inject constructor(
             }
         }
 
+    }
+
+
+    private fun uploadImageToAws(
+        context: Context,
+        uri: Uri,
+    ) {
+        state = state.copy(isLoading = true)
+        val img = getPath(uri, context.contentResolver)
+            val uploadObserver: TransferObserver?
+            try {
+                val transferUtility = TransferUtility.builder()
+                    .defaultBucket("rexsolution")
+                    .context(context)
+                    .s3Client(
+                        AmazonS3Client(
+                            BasicAWSCredentials(
+                                "AKIA6L3OZX46QMLGQD5G",
+                                "0OPxnbtQtv1fkqTTTQPEw9ycx9czZSCGPe/4aTJy"
+                            )
+                        )
+                    )
+                    .build()
+                val image = File(img)
+                uploadObserver = transferUtility.upload(image.name, image)
+                uploadObserver.setTransferListener(object : TransferListener {
+                    override fun onStateChanged(id: Int, transformState: TransferState) {
+                        if (TransferState.COMPLETED == transformState) {
+                            Log.e("Transfer", "Successfully completed")
+                            uploadDataToServer(image.name)
+                        } else if (TransferState.FAILED == transformState) {
+                            state =
+                                state.copy(isLoading = false, error = "Failed to upload, Try again")
+                            Log.e("Transfer", "failed to complete")
+                        }
+                    }
+
+                    override fun onProgressChanged(id: Int, bytesCurrent: Long, bytesTotal: Long) {
+                        val percentDonef = bytesCurrent.toFloat() / bytesTotal.toFloat() * 100
+                        val percentDone = percentDonef.toInt()
+                        Log.e("Transfer", "Percent completed $percentDone")
+
+                        //   tvFileName.setText("ID:" + id + "|bytesCurrent: " + bytesCurrent + "|bytesTotal: " + bytesTotal + "|" + percentDone + "%");
+                    }
+
+                    override fun onError(id: Int, ex: java.lang.Exception) {
+                        state = state.copy(isLoading = false, error = "Error : $ex")
+                        ex.printStackTrace()
+                        Log.d("Error upload", ":$ex")
+                    }
+                })
+            } catch (e: java.lang.Exception) {
+                state = state.copy(isLoading = false, error = "Error : $e")
+                Log.d("AWS", "error:$e")
+            }
     }
 
     private fun uploadDataToAws(context: Context, imageData: ImageData, dbHandler: DBHandler) {
@@ -183,7 +240,7 @@ class InspectionViewModel @Inject constructor(
                         Log.d("Image", "status:$update")
                         //updateProgress()
 
-                        uploadDataToServer(imageData)
+                       // uploadDataToServer(imageData)
                         //update state
                         val remainingCount = state.remainingCount
                         state = state.copy(
@@ -220,19 +277,19 @@ class InspectionViewModel @Inject constructor(
         userPref.logOut()
     }
 
-    private fun uploadDataToServer(imageData: ImageData) {
+    private fun uploadDataToServer(imageName: String) {
 
-        var map = hashMapOf(
-            "fldiLeadId" to imageData.LeadId!!,
+        val map = hashMapOf(
+            "fldiLeadId" to state.acceptedLead!!.fldiLeadId,
             "fldiMemId" to userPref.getUser()!!.DATA_STATUS.member_id,
-            "fldvRgBkImg" to "${imageData.ImageName}",
+            "fldvRgBkImg" to imageName,
         )
         viewModelScope.launch {
             repository.allocationImageAws(map)
                 .collect { result ->
                     when (result) {
                         is Resource.Loading -> {
-                            state = state.copy(isLoading = result.isLoading)
+                           // state = state.copy(isLoading = result.isLoading)
                         }
 
                         is Resource.Success -> {
