@@ -17,8 +17,17 @@ sealed class HomeEvents {
     data class AcceptLead(
         val lead: InspectionLeadModel.DATASTATUS.Preinspection,
     ):HomeEvents()
+    data class UpdateImageUri(
+        val imageUri: Uri,
+        val index: Int,
+        val context: Context
+    ):HomeEvents()
     data class GetLocation(
        val context: Context
+    ):HomeEvents()
+    data class DeleteImageFromAws(
+       val index: Int,
+        val context: Context
     ):HomeEvents()
 
     data class UploadVideo(
@@ -33,7 +42,6 @@ sealed class HomeEvents {
     ):HomeEvents()
     data class SaveToLocal(
         var location: Location,
-        var images: List<Uri> = emptyList(),
         var context: Context
     ):HomeEvents()
     data class GetInspectionHistory(

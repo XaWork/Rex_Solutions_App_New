@@ -28,14 +28,19 @@ import com.ajayasija.rexsolutions.domain.model.ImageData
 import com.ajayasija.rexsolutions.domain.model.InspectionHistoryModel
 import com.ajayasija.rexsolutions.domain.model.InspectionLeadModel
 import com.ajayasija.rexsolutions.domain.model.RegisterFormData
+import com.ajayasija.rexsolutions.domain.model.VehicleMedia
 import com.ajayasija.rexsolutions.domain.repository.AppRepo
 import com.ajayasija.rexsolutions.ui.components.gpsEnabled
+import com.ajayasija.rexsolutions.ui.screens.inspection_lead.titleList
+import com.amazonaws.AmazonClientException
+import com.amazonaws.AmazonServiceException
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
 import com.amazonaws.services.s3.AmazonS3Client
+import com.amazonaws.services.s3.model.DeleteObjectRequest
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -43,6 +48,7 @@ import com.google.android.gms.tasks.CancellationToken
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.gms.tasks.OnTokenCanceledListener
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.BufferedReader
@@ -78,6 +84,23 @@ class InspectionViewModel @Inject constructor(
                 logOut()
             }
 
+            is HomeEvents.UpdateImageUri -> {
+                val updatedVehicleMediaList = state.vehicleMediaList.toMutableList()
+                updatedVehicleMediaList[events.index] =
+                    updatedVehicleMediaList[events.index].copy(
+                        uri = events.imageUri,
+                        error = false
+                    )
+                state = state.copy(
+                    vehicleMediaList = updatedVehicleMediaList
+                )
+                uploadImageToAws(events.context, state.vehicleMediaList[events.index])
+            }
+
+            is HomeEvents.DeleteImageFromAws -> {
+                deleteImageFromAws(events.index, events.context)
+            }
+
             is HomeEvents.GetLocation -> {
                 currentLocation(events.context)
             }
@@ -89,7 +112,7 @@ class InspectionViewModel @Inject constructor(
 
             is HomeEvents.UploadVehMedia -> {
                 //uploadVehMedia(events.context)
-                uploadImageToAws(events.context, events.uri)
+                //  uploadImageToAws(events.context, events.uri)
             }
 
             is HomeEvents.GetInspectionHistory -> {
@@ -153,59 +176,114 @@ class InspectionViewModel @Inject constructor(
 
     }
 
+    private fun deleteImageFromAws(
+        index: Int,
+        context: Context
+    ) {
+        val media = state.vehicleMediaList[index]
+        viewModelScope.launch(Dispatchers.IO) {
+            state = state.copy(isLoading = true)
+            val img = getPath(media.uri!!, context.contentResolver)
+            val image = File(img!!)
+            val awsCredentials = BasicAWSCredentials(
+                "AKIA6L3OZX46XDZR2NFK",
+                "YBvlj0bBaT9nICaR5Rv7qJ5UvDRXplcs0TtKIl+U"
+            )
+
+            val s3Client = AmazonS3Client(awsCredentials)
+
+            try {
+                val deleteObjectRequest = DeleteObjectRequest("rexsolution", image.name)
+                s3Client.deleteObject(deleteObjectRequest)
+                val updatedVehicleMediaList = state.vehicleMediaList.toMutableList()
+                updatedVehicleMediaList[index] =
+                    updatedVehicleMediaList[index].copy(uri = null, progress = 0)
+                state = state.copy(isLoading = false, vehicleMediaList = updatedVehicleMediaList)
+
+                // Object deleted successfully
+                Log.e("S3 Delete", "Object ${image.name} deleted successfully")
+            } catch (e: AmazonServiceException) {
+                state = state.copy(isLoading = false, error = e.message)
+                // The call was transmitted successfully, but Amazon S3 couldn't process it
+                Log.e("S3 Delete", "AmazonServiceException Error: ${e.message}")
+            } catch (e: AmazonClientException) {
+                state = state.copy(isLoading = false, error = e.message)
+                // Amazon S3 couldn't be contacted for a response, or the client couldn't parse the response from Amazon S3
+                Log.e("S3 Delete", "AmazonClientException Error: ${e.message}")
+            }
+        }
+
+    }
+
 
     private fun uploadImageToAws(
         context: Context,
-        uri: Uri,
+        vehicleMedia: VehicleMedia,
     ) {
-        state = state.copy(isLoading = true)
-        val img = getPath(uri, context.contentResolver)
-            val uploadObserver: TransferObserver?
-            try {
-                val transferUtility = TransferUtility.builder()
-                    .defaultBucket("rexsolution")
-                    .context(context)
-                    .s3Client(
-                        AmazonS3Client(
-                            BasicAWSCredentials(
-                                "AKIA6L3OZX46QMLGQD5G",
-                                "0OPxnbtQtv1fkqTTTQPEw9ycx9czZSCGPe/4aTJy"
-                            )
+        //state = state.copy(isLoading = true)
+        val img = getPath(vehicleMedia.uri!!, context.contentResolver)
+        val uploadObserver: TransferObserver?
+        try {
+            val transferUtility = TransferUtility.builder()
+                .defaultBucket("rexsolution")
+                .context(context)
+                .s3Client(
+                    AmazonS3Client(
+                        BasicAWSCredentials(
+                            "AKIA6L3OZX46XDZR2NFK",
+                            "YBvlj0bBaT9nICaR5Rv7qJ5UvDRXplcs0TtKIl+U"
                         )
                     )
-                    .build()
-                val image = File(img)
-                uploadObserver = transferUtility.upload(image.name, image)
-                uploadObserver.setTransferListener(object : TransferListener {
-                    override fun onStateChanged(id: Int, transformState: TransferState) {
-                        if (TransferState.COMPLETED == transformState) {
-                            Log.e("Transfer", "Successfully completed")
-                            uploadDataToServer(image.name)
-                        } else if (TransferState.FAILED == transformState) {
-                            state =
-                                state.copy(isLoading = false, error = "Failed to upload, Try again")
-                            Log.e("Transfer", "failed to complete")
-                        }
-                    }
+                )
+                .build()
+            val image = File(img)
+            uploadObserver = transferUtility.upload(image.name, image)
+            uploadObserver.setTransferListener(object : TransferListener {
+                override fun onStateChanged(id: Int, transformState: TransferState) {
+                    if (TransferState.COMPLETED == transformState) {
+                        Log.e("Transfer", "Successfully completed")
+                        uploadDataToServer(image.name)
+                    } else if (TransferState.FAILED == transformState) {
+                        val updatedVehicleMediaList = state.vehicleMediaList.toMutableList()
+                        updatedVehicleMediaList[vehicleMedia.index] =
+                            updatedVehicleMediaList[vehicleMedia.index].copy(error = true)
 
-                    override fun onProgressChanged(id: Int, bytesCurrent: Long, bytesTotal: Long) {
-                        val percentDonef = bytesCurrent.toFloat() / bytesTotal.toFloat() * 100
-                        val percentDone = percentDonef.toInt()
-                        Log.e("Transfer", "Percent completed $percentDone")
-
-                        //   tvFileName.setText("ID:" + id + "|bytesCurrent: " + bytesCurrent + "|bytesTotal: " + bytesTotal + "|" + percentDone + "%");
+                        state =
+                            state.copy(
+                                isLoading = false,
+                                error = "Failed to upload, Try again",
+                                vehicleMediaList = updatedVehicleMediaList
+                            )
+                        Log.e("Transfer", "failed to complete")
                     }
+                }
 
-                    override fun onError(id: Int, ex: java.lang.Exception) {
-                        state = state.copy(isLoading = false, error = "Error : $ex")
-                        ex.printStackTrace()
-                        Log.d("Error upload", ":$ex")
-                    }
-                })
-            } catch (e: java.lang.Exception) {
-                state = state.copy(isLoading = false, error = "Error : $e")
-                Log.d("AWS", "error:$e")
-            }
+                override fun onProgressChanged(id: Int, bytesCurrent: Long, bytesTotal: Long) {
+                    Log.e("aws", "Id : $id\nByteCurrent : $bytesCurrent\nBytesTotal : $bytesTotal")
+                    //val progress = (bytesCurrent.toFloat() / bytesTotal.toFloat())
+                    val percentDonef = bytesCurrent.toFloat() / bytesTotal.toFloat() * 100
+                    val percentDone = percentDonef.toInt()
+                    Log.e("Transfer", "Percent completed $percentDone")
+
+                    val updatedVehicleMediaList = state.vehicleMediaList.toMutableList()
+                    updatedVehicleMediaList[vehicleMedia.index] =
+                        updatedVehicleMediaList[vehicleMedia.index].copy(progress = percentDone)
+                    state = state.copy(
+                        vehicleMediaList = updatedVehicleMediaList
+                    )
+                    //   tvFileName.setText("ID:" + id + "|bytesCurrent: " + bytesCurrent + "|bytesTotal: " + bytesTotal + "|" + percentDone + "%");
+                }
+
+                override fun onError(id: Int, ex: java.lang.Exception) {
+                    state = state.copy(isLoading = false, error = "Error : $ex")
+                    ex.printStackTrace()
+                    Log.d("Error upload", ":$ex")
+                }
+            })
+        } catch (e: java.lang.Exception) {
+            state = state.copy(isLoading = false, error = "Error : $e")
+            Log.d("AWS", "error:$e")
+        }
     }
 
     private fun uploadDataToAws(context: Context, imageData: ImageData, dbHandler: DBHandler) {
@@ -219,8 +297,8 @@ class InspectionViewModel @Inject constructor(
                 .s3Client(
                     AmazonS3Client(
                         BasicAWSCredentials(
-                            "AKIA6L3OZX46QMLGQD5G",
-                            "0OPxnbtQtv1fkqTTTQPEw9ycx9czZSCGPe/4aTJy"
+                            "AKIA6L3OZX46XDZR2NFK",
+                            "YBvlj0bBaT9nICaR5Rv7qJ5UvDRXplcs0TtKIl+U"
                         )
                     )
                 )
@@ -240,7 +318,7 @@ class InspectionViewModel @Inject constructor(
                         Log.d("Image", "status:$update")
                         //updateProgress()
 
-                       // uploadDataToServer(imageData)
+                        // uploadDataToServer(imageData)
                         //update state
                         val remainingCount = state.remainingCount
                         state = state.copy(
@@ -289,7 +367,7 @@ class InspectionViewModel @Inject constructor(
                 .collect { result ->
                     when (result) {
                         is Resource.Loading -> {
-                           // state = state.copy(isLoading = result.isLoading)
+                            // state = state.copy(isLoading = result.isLoading)
                         }
 
                         is Resource.Success -> {
@@ -521,7 +599,13 @@ class InspectionViewModel @Inject constructor(
                                 allocationStatus = result.data,
                                 error = null,
                                 accept = status == "Y",
-                                acceptedLead = null //if (status == "Y") lead else
+                                acceptedLead = null,
+                                vehicleMediaList = titleList.mapIndexed { index, title ->
+                                    VehicleMedia(
+                                        index = index,
+                                        title = title
+                                    )
+                                }
                             )
                             getPreInspection()
                         }
@@ -569,7 +653,7 @@ class InspectionViewModel @Inject constructor(
                         Log.e("location", "success to get location $it")
                         if (it != null) {
                             state = state.copy(isLoading = false, location = it)
-                        }else{
+                        } else {
                             state = state.copy(
                                 isLoading = false,
                                 error = "Failed to get location"

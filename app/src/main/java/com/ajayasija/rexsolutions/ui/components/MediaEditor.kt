@@ -49,10 +49,10 @@ fun bitmapToUri(
     imageName: String? = null
 ): Uri? {
     Log.e("imagename", "Image name: $imageName")
-    val displayName = if (imageName != null) "$imageName.png"
+    val displayName = if (imageName != null) "$imageName.jpg"
     else "image_${System.currentTimeMillis()}.png"
 
-    val mimeType = "image/png"
+    val mimeType = if (imageName != null) "image/jpg" else "image/png"
     val contentResolver: ContentResolver = context.contentResolver
 
     val imageCollection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)

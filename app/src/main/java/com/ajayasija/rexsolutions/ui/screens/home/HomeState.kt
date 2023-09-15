@@ -6,7 +6,9 @@ import com.ajayasija.rexsolutions.domain.model.AllocationStatusModel
 import com.ajayasija.rexsolutions.domain.model.ImageData
 import com.ajayasija.rexsolutions.domain.model.InspectionHistoryModel
 import com.ajayasija.rexsolutions.domain.model.InspectionLeadModel
+import com.ajayasija.rexsolutions.domain.model.VehicleMedia
 import com.ajayasija.rexsolutions.domain.model.VideoUploadModel
+import com.ajayasija.rexsolutions.ui.screens.inspection_lead.titleList
 
 data class HomeState(
     val isLoading: Boolean = false,
@@ -29,4 +31,10 @@ data class HomeState(
     val uploadImageName: String = "",
     val uploadImageData: ImageData? = null,
     val allImageData: List<ImageData> = emptyList(),
+    val vehicleMediaList: List<VehicleMedia> = titleList.mapIndexed { index, title ->
+        VehicleMedia(
+            index = index,
+            title = title
+        )
+    }
 )
