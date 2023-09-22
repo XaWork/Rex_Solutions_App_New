@@ -181,10 +181,12 @@ fun UploadVehicleDataScreen(
                     height = 150.dp,
                     text = videoText,
                     modifier = Modifier.clickable {
-                        showPhotoPicker = true
-                        pickMultiple = false
-                        video = true
-                        getMedia = GetMedia.VIDEO.name
+                        if (checkLocation(context, viewModel)) {
+                            showPhotoPicker = true
+                            pickMultiple = false
+                            video = true
+                            getMedia = GetMedia.VIDEO.name
+                        }
                     }
                 )
             else

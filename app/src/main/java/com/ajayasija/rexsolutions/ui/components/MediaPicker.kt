@@ -5,6 +5,7 @@ import android.location.Location
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -64,13 +65,27 @@ fun MediaPicker(
         "${context.packageName}.provider",
         mediaImg
     )
+
     val cameraPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture(),
         onResult = { success ->
             if (success) {
                 imageFileUri?.let {
-                    val watermarkImage = addWatermarkToImage(it,context = context, location = location, imageName = imageName)
-                    onImageSelect(watermarkImage)
+                    val watermarkImage = addWatermarkToImage(
+                        it,
+                        context = context,
+                        location = location,
+                        imageName = imageName
+                    )
+                    if (watermarkImage != null) {
+                        onImageSelect(watermarkImage)
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Something went wrong, try again",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
                 Log.e("video", "Success to record video")
             }
@@ -155,7 +170,9 @@ fun MediaPicker(
                                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                             )
                         } else
-                            cameraPickerLauncher.launch(imageFileUri)
+                            if (imageFileUri != null) {
+                                cameraPickerLauncher.launch(imageFileUri)
+                            }
                     } else {
                         if (camera) {
                             videoCaptureLauncher.launch(fileUri)

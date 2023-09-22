@@ -1,6 +1,7 @@
 package com.ajayasija.rexsolutions.ui.components
 
 import android.content.ContentResolver
+import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
@@ -36,11 +37,16 @@ private fun getCurrentDateTime(video: Boolean = false): String? {
 //--------------------- image--------------------
 
 @RequiresApi(Build.VERSION_CODES.P)
-fun uriToBitmap(uri: Uri, context: Context): Bitmap {
-    val contentResolver: ContentResolver = context.contentResolver
-
-    val source = ImageDecoder.createSource(contentResolver, uri)
-    return ImageDecoder.decodeBitmap(source)
+fun uriToBitmap(uri: Uri, context: Context): Bitmap? {
+    return try {
+        val contentResolver: ContentResolver = context.contentResolver
+        val source = ImageDecoder.createSource(contentResolver, uri)
+        ImageDecoder.decodeBitmap(source)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+//    return MediaStore.Images.Media.getBitmap(context.contentResolver,uri)
 }
 
 @RequiresApi(Build.VERSION_CODES.Q)
@@ -56,6 +62,29 @@ fun bitmapToUri(
     val contentResolver: ContentResolver = context.contentResolver
 
     val imageCollection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+
+    // Check if an image with the same display name exists
+    val projection = arrayOf(MediaStore.Images.Media._ID)
+    val selection = "${MediaStore.Images.Media.DISPLAY_NAME} = ?"
+    val selectionArgs = arrayOf(displayName)
+    val cursor = contentResolver.query(
+        imageCollection,
+        projection,
+        selection,
+        selectionArgs,
+        null
+    )
+
+    cursor?.use { c ->
+        if (c.moveToFirst()) {
+            // If an image with the same name exists, delete it
+            val idColumnIndex = c.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
+            val imageUri = ContentUris.withAppendedId(imageCollection, c.getLong(idColumnIndex))
+            contentResolver.delete(imageUri, null, null)
+        }
+    }
+
+    // Now, insert the new image
     val imageDetails = ContentValues().apply {
         put(MediaStore.Images.Media.DISPLAY_NAME, displayName)
         put(MediaStore.Images.Media.MIME_TYPE, mimeType)
@@ -72,6 +101,7 @@ fun bitmapToUri(
     return imageUri
 }
 
+
 @RequiresApi(Build.VERSION_CODES.Q)
 fun addWatermarkToImage(
     uri: Uri,
@@ -80,47 +110,51 @@ fun addWatermarkToImage(
     imageName: String? = null
 ): Uri? {
     val originalBitmap = uriToBitmap(uri, context)
-    var name = uri.path
 
-    val desiredWidth = 1000
-    val desiredHeight = 1200
-    val resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, desiredWidth, desiredHeight, true)
-    val bitmap = resizedBitmap.copy(Bitmap.Config.ARGB_8888, true)
+    if (originalBitmap != null) {
+        val desiredWidth = 1087
+        val desiredHeight = 768
+        val resizedBitmap =
+            Bitmap.createScaledBitmap(originalBitmap, desiredWidth, desiredHeight, true)
+        val bitmap = resizedBitmap.copy(Bitmap.Config.ARGB_8888, true)
 
-    val canvas = Canvas(bitmap)
-    // canvas.drawBitmap(originalBitmap, 0f, 0f, null)
-    val paint = Paint()
+        val canvas = Canvas(bitmap)
+        // canvas.drawBitmap(originalBitmap, 0f, 0f, null)
+        val paint = Paint()
 
-    paint.color = Color.WHITE
-    paint.textSize = 30f
-    paint.isAntiAlias = true
-    paint.textAlign = Paint.Align.RIGHT
+        paint.color = Color.WHITE
+        paint.textSize = 30f
+        paint.isAntiAlias = true
+        paint.textAlign = Paint.Align.RIGHT
 
-    val latlng = "Lat: ${
-        String.format(
-            "%.7f",
-            location.latitude
-        )
-    }, Lng: ${
-        String.format(
-            "%.7f",
-            location.longitude
-        )
-    }"
-    val dateTime = getCurrentDateTime()
+        val latlng = "Lat: ${
+            String.format(
+                "%.7f",
+                location.latitude
+            )
+        }, Lng: ${
+            String.format(
+                "%.7f",
+                location.longitude
+            )
+        }"
+        val dateTime = getCurrentDateTime()
 
-    val watermarkText = "Rex solution\n$dateTime\n$latlng"
-    val lines = watermarkText.split("\n")
-    val padding = 5
-    val lineHeight = (paint.textSize + padding).toInt()
-    val startY = bitmap.height - (lines.size * lineHeight)
+        val watermarkText = "Rex solution\n$dateTime\n$latlng"
+        val lines = watermarkText.split("\n")
+        val padding = 5
+        val lineHeight = (paint.textSize + padding).toInt()
+        val startY = bitmap.height - (lines.size * lineHeight)
 
-    for (i in lines.indices) {
-        val textY = startY + (i * lineHeight)
-        canvas.drawText(lines[i], bitmap.width - padding.toFloat(), textY.toFloat(), paint)
+        for (i in lines.indices) {
+            val textY = startY + (i * lineHeight)
+            canvas.drawText(lines[i], bitmap.width - padding.toFloat(), textY.toFloat(), paint)
+        }
+
+        return bitmapToUri(bitmap, context, imageName)
+    }else {
+        return null
     }
-
-    return bitmapToUri(bitmap, context, imageName)
 }
 
 //-------------- video ----------------------------------
