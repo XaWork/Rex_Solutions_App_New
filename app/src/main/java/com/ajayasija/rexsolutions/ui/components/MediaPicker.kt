@@ -142,7 +142,7 @@ fun MediaPicker(
                         resolver.notifyChange(contentUri, null)
 
                         // Handle the newly saved video URI as needed
-                        onVideoSelect(newUri.toString())
+                        onVideoSelect(getRealPathFromURI(context, newUri))
                     }
                 }
                 Log.e("video", "Success to record video")
