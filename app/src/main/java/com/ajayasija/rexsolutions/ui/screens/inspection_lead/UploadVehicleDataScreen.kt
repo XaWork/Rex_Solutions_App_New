@@ -100,7 +100,7 @@ fun UploadVehicleDataScreen(
     else if (state.uploadVideo != null) {
         ShowToast(message = "Video upload successfully", context = context)
         vehVideo = null
-        viewModel.state = viewModel.state.copy(uploadVideo = null)
+      //  viewModel.state = viewModel.state.copy(uploadVideo = null)
     }
 
     //chage text after video selection
@@ -289,7 +289,9 @@ fun UploadVehicleDataScreen(
                 }
                 if (!allImageSet) {
                     Toast.makeText(context, "Please upload all images", Toast.LENGTH_SHORT).show()
-                } else {
+                }else if(state.uploadVideo == null){
+                    Toast.makeText(context, "Please upload video", Toast.LENGTH_SHORT).show()
+                } else{
                     Toast.makeText(
                         context,
                         "Wait a minute, Don't press any button.",

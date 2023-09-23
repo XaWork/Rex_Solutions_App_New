@@ -20,6 +20,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import java.io.File
+import java.io.FileInputStream
 import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -152,12 +153,16 @@ fun addWatermarkToImage(
         }
 
         return bitmapToUri(bitmap, context, imageName)
-    }else {
+    } else {
         return null
     }
 }
 
 //-------------- video ----------------------------------
+
+fun saveVideoToGallery(uri: Uri, context: Context, media : File) {
+
+}
 
 /*
 @OptIn(DelicateCoroutinesApi::class)

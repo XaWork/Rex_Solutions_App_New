@@ -1,9 +1,11 @@
 package com.ajayasija.rexsolutions.ui.components
 
 import android.Manifest
+import android.content.ContentValues
 import android.location.Location
 import android.net.Uri
 import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -19,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.FileProvider
 import java.io.File
+import java.io.FileInputStream
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
@@ -114,7 +117,33 @@ fun MediaPicker(
         onResult = { success ->
             if (success) {
                 fileUri?.let {
-                    onVideoSelect(media.absolutePath)
+                    val contentValues = ContentValues().apply {
+                        put(MediaStore.Video.Media.DISPLAY_NAME, "Video_${System.currentTimeMillis()}.mp4") // Change the display name as needed
+                        put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
+                    }
+
+                    val resolver = context.contentResolver
+                    val contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                    val newUri = resolver.insert(contentUri, contentValues)
+                    if (newUri != null) {
+                        val outputStream = resolver.openOutputStream(newUri)
+                        val inputStream = FileInputStream(media)
+
+                        if (outputStream != null) {
+                            inputStream.copyTo(outputStream)
+                        }
+                        inputStream.close()
+                        outputStream?.close()
+
+                        // Optionally, you can delete the temporary file
+                        media.delete()
+
+                        // Notify the MediaStore that a new video has been added
+                        resolver.notifyChange(contentUri, null)
+
+                        // Handle the newly saved video URI as needed
+                        onVideoSelect(newUri.toString())
+                    }
                 }
                 Log.e("video", "Success to record video")
             }
