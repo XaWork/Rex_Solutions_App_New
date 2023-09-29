@@ -27,7 +27,6 @@ import com.ajayasija.rexsolutions.domain.model.AllocationImageAwsModel
 import com.ajayasija.rexsolutions.domain.model.ImageData
 import com.ajayasija.rexsolutions.domain.model.InspectionHistoryModel
 import com.ajayasija.rexsolutions.domain.model.InspectionLeadModel
-import com.ajayasija.rexsolutions.domain.model.RegisterFormData
 import com.ajayasija.rexsolutions.domain.model.VehicleMedia
 import com.ajayasija.rexsolutions.domain.repository.AppRepo
 import com.ajayasija.rexsolutions.ui.components.gpsEnabled
@@ -106,8 +105,7 @@ class InspectionViewModel @Inject constructor(
             }
 
             is HomeEvents.UploadVideo -> {
-                //state = state.copy(error = uploadVideo(events.path))
-                uploadVideos(events.file)
+                uploadVideos(events.file, events.location)
             }
 
             is HomeEvents.UploadVehMedia -> {
@@ -123,7 +121,6 @@ class InspectionViewModel @Inject constructor(
                 setAllocation(
                     lead = state.acceptedLead!!,
                     "Y",
-                    context = events.context,
                     location = events.location
                 )
                 //saveToLocal(events.images, context = events.context)
@@ -139,7 +136,7 @@ class InspectionViewModel @Inject constructor(
 
             is HomeEvents.SetAllocation -> {
                 val lead = events.lead
-                setAllocation(lead, events.status, events.context)
+                setAllocation(lead, events.status)
             }
 
             is HomeEvents.AcceptLead -> {
@@ -356,7 +353,6 @@ class InspectionViewModel @Inject constructor(
     }
 
     private fun uploadDataToServer(imageName: String) {
-
         val map = hashMapOf(
             "fldiLeadId" to state.acceptedLead!!.fldiLeadId,
             "fldiMemId" to userPref.getUser()!!.DATA_STATUS.member_id,
@@ -387,12 +383,17 @@ class InspectionViewModel @Inject constructor(
                                 lead = null
                             )
                         }
+
+                        else -> {}
                     }
                 }
         }
     }
 
-    private fun uploadVideos(file: File) {
+    private fun uploadVideos(
+        file: File,
+        location: Location? = null
+    ) {
         viewModelScope.launch {
             repository.uploadVideo(state.acceptedLead!!.fldiLeadId, file)
                 .collect { result ->
@@ -406,6 +407,12 @@ class InspectionViewModel @Inject constructor(
                                 isLoading = false,
                                 uploadVideo = result.data,
                                 error = null,
+                                videoUploadSuccessfully = true
+                            )
+                            setAllocation(
+                                lead = state.acceptedLead!!,
+                                "Y",
+                                location = location
                             )
                         }
 
@@ -416,6 +423,8 @@ class InspectionViewModel @Inject constructor(
                                 lead = null
                             )
                         }
+
+                        else -> {}
                     }
                 }
         }
@@ -570,7 +579,6 @@ class InspectionViewModel @Inject constructor(
     private fun setAllocation(
         lead: InspectionLeadModel.DATASTATUS.Preinspection,
         status: String,
-        context: Context,
         location: Location? = null
     ) {
         val map = hashMapOf(

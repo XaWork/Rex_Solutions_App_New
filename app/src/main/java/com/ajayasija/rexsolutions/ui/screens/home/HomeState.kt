@@ -13,6 +13,7 @@ import com.ajayasija.rexsolutions.ui.screens.inspection_lead.titleList
 data class HomeState(
     val isLoading: Boolean = false,
     val accept: Boolean = false,
+    val videoUploadSuccessfully: Boolean = false,
     val error: String? = null,
     val location: Location? = null,
     val lead: InspectionLeadModel? = null,

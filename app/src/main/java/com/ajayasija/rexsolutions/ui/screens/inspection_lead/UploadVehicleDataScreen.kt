@@ -100,7 +100,7 @@ fun UploadVehicleDataScreen(
     else if (state.uploadVideo != null) {
         ShowToast(message = "Video upload successfully", context = context)
         vehVideo = null
-      //  viewModel.state = viewModel.state.copy(uploadVideo = null)
+        viewModel.state = viewModel.state.copy(uploadVideo = null)
     }
 
     //chage text after video selection
@@ -132,13 +132,16 @@ fun UploadVehicleDataScreen(
             imageName = imageName,
             //changeDialogValue = { showMediaChooserDialog = it },
             onImageSelect = {
-                viewModel.onEvent(
-                    HomeEvents.UpdateImageUri(
-                        imageUri = it!!,
-                        selectedIndex,
-                        context
+                if (it != null) {
+                    viewModel.onEvent(
+                        HomeEvents.UpdateImageUri(
+                            imageUri = it,
+                            selectedIndex,
+                            context
+                        )
                     )
-                )
+                }
+
                 showPhotoPicker = false
             },
             onDismissMediaPicker = {
@@ -204,16 +207,6 @@ fun UploadVehicleDataScreen(
                     }) {
                         vehVideo = null
                     }
-                    VerticalSpace(space = 15.dp)
-                    Log.e("video", "veh video $vehVideo")
-                    RexButton(title = "Upload Video") {
-                        if (vehVideo != null)
-                            viewModel.onEvent(HomeEvents.UploadVideo(File(vehVideo!!)))
-                        else {
-                            toastMessage = "Please select video"
-                            showToast = true
-                        }
-                    }
                 }
             VerticalSpace(space = 15.dp)
 
@@ -237,12 +230,14 @@ fun UploadVehicleDataScreen(
                                 video = false
                             }
                         }, deleteMedia = {
-                            viewModel.onEvent(
-                                HomeEvents.DeleteImageFromAws(
-                                    media.index,
-                                    context
+                            if (media.uri != null) {
+                                viewModel.onEvent(
+                                    HomeEvents.DeleteImageFromAws(
+                                        media.index,
+                                        context
+                                    )
                                 )
-                            )
+                            }
                         })
                         Box(
                             modifier = Modifier
@@ -256,13 +251,15 @@ fun UploadVehicleDataScreen(
                                     contentDescription = "refresh",
                                     tint = Color.Red,
                                     modifier = Modifier.clickable {
-                                        viewModel.onEvent(
-                                            HomeEvents.UpdateImageUri(
-                                                imageUri = media.uri!!,
-                                                index = media.index,
-                                                context = context
+                                        if (media.uri != null) {
+                                            viewModel.onEvent(
+                                                HomeEvents.UpdateImageUri(
+                                                    imageUri = media.uri!!,
+                                                    index = media.index,
+                                                    context = context
+                                                )
                                             )
-                                        )
+                                        }
                                     }
                                 )
 
@@ -289,18 +286,19 @@ fun UploadVehicleDataScreen(
                 }
                 if (!allImageSet) {
                     Toast.makeText(context, "Please upload all images", Toast.LENGTH_SHORT).show()
-                }else if(state.uploadVideo == null){
+                } else if (vehVideo == null) {
                     Toast.makeText(context, "Please upload video", Toast.LENGTH_SHORT).show()
-                } else{
+                } else {
                     Toast.makeText(
                         context,
                         "Wait a minute, Don't press any button.",
                         Toast.LENGTH_LONG
                     ).show()
                     viewModel.onEvent(
-                        HomeEvents.SaveToLocal(
+                        HomeEvents.UploadVideo(
+                            File(vehVideo!!),
                             location = state.location!!,
-                            context = context,
+                            context = context
                         )
                     )
                 }

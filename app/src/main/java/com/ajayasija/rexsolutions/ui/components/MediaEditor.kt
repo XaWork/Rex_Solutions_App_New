@@ -108,7 +108,8 @@ fun addWatermarkToImage(
     uri: Uri,
     context: Context,
     location: Location,
-    imageName: String? = null
+    imageName: String? = null,
+    imageFromGallery: Boolean = false
 ): Uri? {
     val originalBitmap = uriToBitmap(uri, context)
 
@@ -147,10 +148,12 @@ fun addWatermarkToImage(
         val lineHeight = (paint.textSize + padding).toInt()
         val startY = bitmap.height - (lines.size * lineHeight)
 
-        for (i in lines.indices) {
-            val textY = startY + (i * lineHeight)
-            canvas.drawText(lines[i], bitmap.width - padding.toFloat(), textY.toFloat(), paint)
-        }
+       if(!imageFromGallery) {
+           for (i in lines.indices) {
+               val textY = startY + (i * lineHeight)
+               canvas.drawText(lines[i], bitmap.width - padding.toFloat(), textY.toFloat(), paint)
+           }
+       }
 
         return bitmapToUri(bitmap, context, imageName)
     } else {

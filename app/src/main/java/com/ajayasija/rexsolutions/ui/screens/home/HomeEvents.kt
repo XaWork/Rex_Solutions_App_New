@@ -31,7 +31,9 @@ sealed class HomeEvents {
     ):HomeEvents()
 
     data class UploadVideo(
-        val file: File
+        val file: File,
+        var location: Location,
+        var context: Context
     ):HomeEvents()
     data class Inspection(
         val context: Context

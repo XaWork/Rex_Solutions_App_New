@@ -56,7 +56,7 @@ fun MediaPicker(
         onResult = { uri ->
             if (uri != null) {
                 showLoading = true
-                onImageSelect(addWatermarkToImage(uri, context, location, imageName))
+                onImageSelect(addWatermarkToImage(uri, context, location, imageName, imageFromGallery = true))
                 showLoading = false
             }
         }
