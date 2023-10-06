@@ -1,0 +1,50 @@
+<!-- custom_notification.xml -->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/notification_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ride Request"
+        style="@style/TextAppearance.Compat.Notification.Title"
+
+        android:textSize="18sp"
+        android:textColor="@color/purple_200" />
+
+    <TextView
+        android:id="@+id/notification_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.Compat.Notification.Line2"
+        android:layout_below="@id/notification_title"
+        android:text="John has requested a ride."
+        android:textSize="14sp"
+        android:textColor="@android:color/black" />
+
+    <Button
+        android:id="@+id/accept_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/notification_message"
+        android:layout_marginTop="16dp"
+        android:text="Accept"
+        android:background="@color/purple_200"
+        android:textColor="@android:color/white" />
+
+    <Button
+        android:id="@+id/reject_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/notification_message"
+        android:layout_toEndOf="@id/accept_button"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Reject"
+        android:background="@android:color/white"
+        android:textColor="@color/purple_200" />
+
+</RelativeLayout>

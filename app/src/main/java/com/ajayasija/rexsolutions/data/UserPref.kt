@@ -62,14 +62,15 @@ class UserPref @Inject constructor(
         editor.apply()
     }
 
-    fun saveAccessToken(token: String) {
+    fun saveToken(token: String) {
         val editor: SharedPreferences.Editor =
             context.getSharedPreferences(_myPrefName, Context.MODE_PRIVATE).edit()
         editor.putString("token", token)
         editor.apply()
+        getToken()
     }
 
-    fun getAccessToken(): String {
+    fun getToken(): String {
         val prefs = context.getSharedPreferences(_myPrefName, Context.MODE_PRIVATE)
         return prefs.getString("token", "") ?: ""
     }
