@@ -28,11 +28,12 @@ class AppRepoImpl @Inject constructor(
     private val api: ApiService
 ) : AppRepo {
 
-    override suspend fun login(username: String, password: String): Flow<Resource<LoginModel>> {
+    override suspend fun login(username: String, password: String,
+                               token: String): Flow<Resource<LoginModel>> {
         return flow {
             emit(Resource.Loading(true))
             try {
-                val response = api.login(username, password)
+                val response = api.login(username, password, token)
                 emit(Resource.Success(response))
             } catch (io: IOException) {
                 io.printStackTrace()

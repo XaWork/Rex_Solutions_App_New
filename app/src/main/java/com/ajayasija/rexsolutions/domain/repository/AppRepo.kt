@@ -14,7 +14,7 @@ import java.io.File
 
 interface AppRepo {
 
-    suspend fun login(username: String, password: String): Flow<Resource<LoginModel>>
+    suspend fun login(username: String, password: String, token: String): Flow<Resource<LoginModel>>
     suspend fun changePassword(
         memberId: String,
         oldPassword: String,

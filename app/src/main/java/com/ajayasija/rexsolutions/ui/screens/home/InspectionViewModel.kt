@@ -548,7 +548,7 @@ class InspectionViewModel @Inject constructor(
 
     private fun getPreInspection() {
         viewModelScope.launch {
-            repository.getInspection(userPref.getUser()?.DATA_STATUS!!.member_id)
+            repository.getInspection(userPref.getUser()?.DATA_STATUS?.member_id ?: "")
                 .collect { result ->
                     when (result) {
                         is Resource.Loading -> {

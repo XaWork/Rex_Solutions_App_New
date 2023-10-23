@@ -106,7 +106,7 @@ fun MediaPicker(
         }
     )
 
-    val media = File.createTempFile("temp_file", ".mp4", context.applicationContext.cacheDir)
+    val media = File.createTempFile("temp_file_${System.currentTimeMillis()}", ".mp4", context.applicationContext.cacheDir)
     val fileUri = FileProvider.getUriForFile(
         context,
         "${context.packageName}.provider",
@@ -136,7 +136,7 @@ fun MediaPicker(
                         outputStream?.close()
 
                         // Optionally, you can delete the temporary file
-                        media.delete()
+                      //  media.delete()
 
                         // Notify the MediaStore that a new video has been added
                         resolver.notifyChange(contentUri, null)

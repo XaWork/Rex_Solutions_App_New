@@ -133,7 +133,7 @@ class AuthViewModel @Inject constructor(
 
     private fun login(username: String, password: String) {
         viewModelScope.launch {
-            repository.login(username, password)
+            repository.login(username, password, userPref.getToken())
                 .collect { result ->
                     when (result) {
                         is Resource.Loading -> {

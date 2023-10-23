@@ -1,14 +1,14 @@
 package com.ajayasija.rexsolutions.ui.navigation
 
 sealed class Screens(val route: String){
-    object SplashScreen: Screens("splash")
-    object LoginScreen: Screens("login")
-    object LoginAsScreen: Screens("loginas")
-    object RegisterScreen: Screens("register")
-    object HomeScreen: Screens("home")
-    object ProfileScreen: Screens("profile")
-    object InspectionLeadScreen: Screens("inspection")
-    object UploadVehicleDataScreen: Screens("uploaddata")
+    data object SplashScreen: Screens("splash")
+    data object LoginScreen: Screens("login")
+    data object LoginAsScreen: Screens("loginas")
+    data object RegisterScreen: Screens("register")
+    data object HomeScreen: Screens("home")
+    data object ProfileScreen: Screens("profile")
+    data object InspectionLeadScreen: Screens("inspection")
+    data object UploadVehicleDataScreen: Screens("uploaddata")
 
     fun withArgs(vararg args: String):String{
         return buildString {

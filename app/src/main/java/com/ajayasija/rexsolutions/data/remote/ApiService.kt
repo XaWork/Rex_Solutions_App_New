@@ -23,7 +23,8 @@ interface ApiService {
     @GET("login_handler.php")
     suspend fun login(
         @Query("user_name") userName: String,
-        @Query("user_pass") userPass: String
+        @Query("user_pass") userPass: String,
+        @Query("device_id") token: String,
     ): LoginModel
 
     @FormUrlEncoded
