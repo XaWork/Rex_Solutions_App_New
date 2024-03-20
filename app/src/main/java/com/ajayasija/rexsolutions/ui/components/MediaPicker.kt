@@ -56,7 +56,15 @@ fun MediaPicker(
         onResult = { uri ->
             if (uri != null) {
                 showLoading = true
-                onImageSelect(addWatermarkToImage(uri, context, location, imageName, imageFromGallery = true))
+                onImageSelect(
+                    addWatermarkToImage(
+                        uri,
+                        context,
+                        location,
+                        imageName,
+                        imageFromGallery = true
+                    )
+                )
                 showLoading = false
             }
         }
@@ -106,7 +114,11 @@ fun MediaPicker(
         }
     )
 
-    val media = File.createTempFile("temp_file_${System.currentTimeMillis()}", ".mp4", context.applicationContext.cacheDir)
+    val media = File.createTempFile(
+        "temp_file_${System.currentTimeMillis()}",
+        ".mp4",
+        context.applicationContext.cacheDir
+    )
     val fileUri = FileProvider.getUriForFile(
         context,
         "${context.packageName}.provider",
@@ -118,7 +130,10 @@ fun MediaPicker(
             if (success) {
                 fileUri?.let {
                     val contentValues = ContentValues().apply {
-                        put(MediaStore.Video.Media.DISPLAY_NAME, "Video_${System.currentTimeMillis()}.mp4") // Change the display name as needed
+                        put(
+                            MediaStore.Video.Media.DISPLAY_NAME,
+                            "Video_${System.currentTimeMillis()}.mp4"
+                        ) // Change the display name as needed
                         put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
                     }
 
@@ -136,7 +151,7 @@ fun MediaPicker(
                         outputStream?.close()
 
                         // Optionally, you can delete the temporary file
-                      //  media.delete()
+                        //  media.delete()
 
                         // Notify the MediaStore that a new video has been added
                         resolver.notifyChange(contentUri, null)
@@ -181,7 +196,9 @@ fun MediaPicker(
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.CAMERA,
-                    Manifest.permission.RECORD_AUDIO
+                    Manifest.permission.RECORD_AUDIO,
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.READ_MEDIA_IMAGES
+                    else Manifest.permission.READ_EXTERNAL_STORAGE
                 )
             )
         ) {

@@ -12,10 +12,8 @@ import androidx.compose.runtime.setValue
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ajayasija.rexsolutions.data.DBHandler
 import com.ajayasija.rexsolutions.data.Resource
 import com.ajayasija.rexsolutions.data.UserPref
-import com.ajayasija.rexsolutions.domain.model.ImageData
 import com.ajayasija.rexsolutions.domain.model.RegisterFormData
 import com.ajayasija.rexsolutions.domain.repository.AppRepo
 import com.ajayasija.rexsolutions.ui.components.gpsEnabled

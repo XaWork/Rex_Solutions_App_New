@@ -1,13 +1,12 @@
 package com.ajayasija.rexsolutions.ui.components
 
 import android.Manifest
-import android.util.Log
+import android.os.Build
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,7 +20,6 @@ import androidx.lifecycle.LifecycleEventObserver
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -30,7 +28,7 @@ fun AllPermissionGranted(
     permissions: List<String>,
 ): Boolean {
 
-    Log.e("Permissions", "Button clicked")
+    //Log.e("Permissions", "Button clicked")
 
     var granted = false
     val permissionStates = rememberMultiplePermissionsState(
@@ -70,7 +68,6 @@ fun AllPermissionGranted(
                 Lifecycle.Event.ON_CREATE -> {
                     permissionStates.launchMultiplePermissionRequest()
                 }
-
                 else -> {}
             }
         }
@@ -155,6 +152,25 @@ fun AllPermissionGranted(
                     }
 
                     Manifest.permission.RECORD_AUDIO -> {
+                        when {
+                            it.status.isGranted -> {
+                                granted = true
+                            }
+
+                            it.status.shouldShowRationale -> {
+                                granted = false
+                            }
+
+                            !it.status.isGranted && !it.status.shouldShowRationale -> {
+                                granted = false
+                                showDialog = true
+
+                            }
+                        }
+                    }
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.READ_MEDIA_IMAGES
+                    else Manifest.permission.READ_EXTERNAL_STORAGE -> {
                         when {
                             it.status.isGranted -> {
                                 granted = true
